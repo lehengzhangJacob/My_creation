@@ -5,6 +5,7 @@ live only under ``ablation_study/``. Paths resolve to ``My_creation/`` parent.
 """
 
 import argparse
+import csv
 import math
 import os
 import random
@@ -21,6 +22,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from tqdm import tqdm
 
 from transformers import get_linear_schedule_with_warmup, DebertaV2Tokenizer, BertTokenizer
+from transformers.models.deberta_v2.modeling_deberta_v2 import DebertaV2Model
 from torch.optim import AdamW
 
 from deberta_infogate import InfoGate_DeBertaForSequenceClassification
@@ -56,6 +58,20 @@ parser = argparse.ArgumentParser(description="InfoGate Training")
 parser.add_argument("--model", type=str,
                     default=os.path.join(_MY_CREATION_DIR, "deberta-v3-base"))
 parser.add_argument("--dataset", type=str, choices=["mosi", "mosei", "simsv2"], default="mosi")
+parser.add_argument(
+    "--text_backbone",
+    type=str,
+    default="auto",
+    choices=["auto", "deberta", "bert"],
+    help="Text encoder for MOSI/MOSEI; SIMSv2 always uses BERT.",
+)
+parser.add_argument(
+    "--model_variant",
+    type=str,
+    default="prism",
+    choices=["prism", "text_only"],
+    help="PRISM multimodal model or a DeBERTa-only regression baseline.",
+)
 parser.add_argument("--max_seq_length", type=int, default=50)
 parser.add_argument("--train_batch_size", type=int, default=32)
 parser.add_argument("--dev_batch_size", type=int, default=128)
@@ -84,6 +100,20 @@ parser.add_argument("--selector_balance_weight", type=float, default=0.0,
                     help="Batch-level routing entropy regularization weight.")
 parser.add_argument("--selector_rib_weight", type=float, default=0.05,
                     help="Overall weight of the routing supervision loss.")
+parser.add_argument(
+    "--confidence_mode",
+    type=str,
+    default="token",
+    choices=["token", "modality", "uniform"],
+    help="Confidence granularity used by InfoGate.",
+)
+parser.add_argument(
+    "--routing_mode",
+    type=str,
+    default="gumbel",
+    choices=["gumbel", "argmax", "soft", "batch_gumbel"],
+    help="DPR routing strategy used by InfoGate.",
+)
 parser.add_argument("--disable_l_lib", action="store_true",
                     help="Ablate the label-level IB loss.")
 parser.add_argument("--disable_l_rib", action="store_true",
@@ -137,8 +167,39 @@ parser.add_argument(
     choices=["mmsa", "legacy"],
     help="SIMSv2 only: mmsa uses text_bert + A/V lengths; legacy re-tokenizes raw_text.",
 )
+parser.add_argument(
+    "--step_loss_csv",
+    type=str,
+    default=None,
+    help="Optional CSV path for per-mini-batch loss components.",
+)
+parser.add_argument(
+    "--step_loss_log_interval",
+    type=int,
+    default=1,
+    help="Write one step-loss row every N mini-batches when --step_loss_csv is set.",
+)
 
 args = parser.parse_args()
+
+
+def effective_text_backbone():
+    """Resolve the text encoder; SIMSv2 remains on BERT."""
+    if args.dataset == "simsv2":
+        return "bert"
+    if args.text_backbone in {"bert", "deberta"}:
+        return args.text_backbone
+    model_name = os.path.normpath(str(args.model)).lower()
+    if "bert" in model_name and "deberta" not in model_name:
+        return "bert"
+    return "deberta"
+
+
+if args.model_variant == "text_only":
+    if args.dataset == "simsv2":
+        parser.error("--model_variant text_only is only supported for MOSI/MOSEI")
+    if effective_text_backbone() != "deberta":
+        parser.error("--model_variant text_only requires a DeBERTa text backbone")
 
 if args.dataset == "simsv2":
     if "deberta-v3-base" in args.model:
@@ -149,6 +210,7 @@ if isinstance(args.model, str):
 
 args.use_l_lib = not args.disable_l_lib
 args.use_l_rib = not args.disable_l_rib
+args.step_loss_log_interval = max(1, int(args.step_loss_log_interval or 1))
 
 global_configs.set_dataset_config(args.dataset)
 ACOUSTIC_DIM = global_configs.ACOUSTIC_DIM
@@ -264,6 +326,8 @@ def convert_to_features(examples, max_seq_length, tokenizer):
 def get_tokenizer(model):
     if args.dataset == "simsv2":
         return BertTokenizer.from_pretrained(model)
+    if effective_text_backbone() == "bert":
+        return BertTokenizer.from_pretrained(model)
     return DebertaV2Tokenizer.from_pretrained(model)
 
 
@@ -322,8 +386,42 @@ def set_seed(seed):
     torch.cuda.manual_seed_all(seed)
 
 
+class TextOnlyDebertaRegressor(nn.Module):
+    """DeBERTa encoder with a dropout/linear scalar regression head."""
+
+    def __init__(self, pretrained_model_name_or_path, dropout_prob):
+        super().__init__()
+        self.deberta = DebertaV2Model.from_pretrained(pretrained_model_name_or_path)
+        self.dropout = nn.Dropout(dropout_prob)
+        self.regressor = nn.Linear(self.deberta.config.hidden_size, 1)
+
+    def forward(self, input_ids, attention_mask=None, labels=None, stage=1):
+        if attention_mask is None:
+            pad_id = self.deberta.config.pad_token_id
+            pad_id = 0 if pad_id is None else pad_id
+            attention_mask = input_ids.ne(pad_id).long()
+        else:
+            attention_mask = attention_mask.long()
+
+        hidden = self.deberta(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+        )[0]
+        pooled = hidden[:, 0]
+        logits = self.regressor(self.dropout(pooled))
+        zero_ib = logits.new_zeros(())
+        return logits, zero_ib, {}, pooled
+
+
 def build_model(n_opt):
-    if args.dataset == "simsv2":
+    if args.model_variant == "text_only":
+        model = TextOnlyDebertaRegressor(args.model, args.dropout_prob)
+        backbone_prefix = "deberta."
+    elif args.dataset == "simsv2":
+        model = InfoGate_BertForSequenceClassification.from_pretrained(
+            args.model, multimodal_config=args, num_labels=1)
+        backbone_prefix = "bert.model."
+    elif effective_text_backbone() == "bert":
         model = InfoGate_BertForSequenceClassification.from_pretrained(
             args.model, multimodal_config=args, num_labels=1)
         backbone_prefix = "bert.model."
@@ -333,26 +431,38 @@ def build_model(n_opt):
         backbone_prefix = "dberta.model."
     model.to(DEVICE)
 
-    no_decay = {"bias", "LayerNorm.bias", "LayerNorm.weight"}
-    ig_lr = getattr(args, 'ig_learning_rate', 5e-4)
+    no_decay_names = {"bias", "LayerNorm.bias", "LayerNorm.weight"}
 
-    backbone_decay, backbone_no_decay = [], []
-    ig_decay, ig_no_decay = [], []
-    for n, p in model.named_parameters():
-        if not p.requires_grad:
-            continue
-        is_nd = any(nd in n for nd in no_decay)
-        if n.startswith(backbone_prefix):
-            (backbone_no_decay if is_nd else backbone_decay).append(p)
-        else:
-            (ig_no_decay if is_nd else ig_decay).append(p)
+    if args.model_variant == "text_only":
+        decay_params, no_decay_params = [], []
+        for n, p in model.named_parameters():
+            if not p.requires_grad:
+                continue
+            is_nd = any(nd in n for nd in no_decay_names)
+            (no_decay_params if is_nd else decay_params).append(p)
+        groups = [
+            {"params": decay_params, "lr": args.learning_rate, "weight_decay": args.weight_decay},
+            {"params": no_decay_params, "lr": args.learning_rate, "weight_decay": 0.0},
+        ]
+    else:
+        ig_lr = getattr(args, 'ig_learning_rate', 5e-4)
+        backbone_decay, backbone_no_decay = [], []
+        ig_decay, ig_no_decay = [], []
+        for n, p in model.named_parameters():
+            if not p.requires_grad:
+                continue
+            is_nd = any(nd in n for nd in no_decay_names)
+            if n.startswith(backbone_prefix):
+                (backbone_no_decay if is_nd else backbone_decay).append(p)
+            else:
+                (ig_no_decay if is_nd else ig_decay).append(p)
 
-    groups = [
-        {"params": backbone_decay,    "lr": args.learning_rate, "weight_decay": args.weight_decay},
-        {"params": backbone_no_decay, "lr": args.learning_rate, "weight_decay": 0.0},
-        {"params": ig_decay,          "lr": ig_lr,              "weight_decay": args.weight_decay},
-        {"params": ig_no_decay,       "lr": ig_lr,              "weight_decay": 0.0},
-    ]
+        groups = [
+            {"params": backbone_decay,    "lr": args.learning_rate, "weight_decay": args.weight_decay},
+            {"params": backbone_no_decay, "lr": args.learning_rate, "weight_decay": 0.0},
+            {"params": ig_decay,          "lr": ig_lr,              "weight_decay": args.weight_decay},
+            {"params": ig_no_decay,       "lr": ig_lr,              "weight_decay": 0.0},
+        ]
     optimizer = AdamW(groups, lr=args.learning_rate)
     scheduler = get_linear_schedule_with_warmup(
         optimizer,
@@ -410,8 +520,111 @@ def toggle_state(enabled):
     return "on" if enabled else "off"
 
 
+STEP_LOSS_FIELDS = [
+    "dataset",
+    "epoch",
+    "local_step",
+    "global_step",
+    "stage",
+    "L_total",
+    "L_total_scaled",
+    "L_task",
+    "ib_logged",
+    "L_tib_raw",
+    "L_lib_raw",
+    "L_rib_raw",
+    "L_rib_kl_raw",
+    "L_rib_balance_raw",
+    "L_tib_weighted",
+    "L_lib_weighted",
+    "L_rib_weighted",
+    "alpha_ib",
+    "selector_rib_weight",
+    "gradient_accumulation_step",
+]
+STEP_LOSS_HANDLE = None
+STEP_LOSS_WRITER = None
+GLOBAL_STEP = 0
+
+
+def init_step_loss_logging():
+    global STEP_LOSS_HANDLE, STEP_LOSS_WRITER
+    if not args.step_loss_csv:
+        return
+    out_dir = os.path.dirname(os.path.abspath(args.step_loss_csv))
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+    STEP_LOSS_HANDLE = open(args.step_loss_csv, "w", newline="", encoding="utf-8")
+    STEP_LOSS_WRITER = csv.DictWriter(STEP_LOSS_HANDLE, fieldnames=STEP_LOSS_FIELDS)
+    STEP_LOSS_WRITER.writeheader()
+    print(f"  Step loss CSV  : {args.step_loss_csv} "
+          f"(interval={args.step_loss_log_interval})")
+
+
+def close_step_loss_logging():
+    global STEP_LOSS_HANDLE, STEP_LOSS_WRITER
+    if STEP_LOSS_HANDLE is not None:
+        STEP_LOSS_HANDLE.close()
+    STEP_LOSS_HANDLE = None
+    STEP_LOSS_WRITER = None
+
+
+def write_step_loss(epoch_idx, local_step, stage, l_task, ib_loss, loss_scaled, loss_dict):
+    if STEP_LOSS_WRITER is None:
+        return
+    if GLOBAL_STEP % args.step_loss_log_interval != 0:
+        return
+
+    l_tib = float(loss_dict.get("L_tib", 0.0))
+    l_lib = float(loss_dict.get("L_lib", 0.0))
+    l_rib = float(loss_dict.get("L_rib", 0.0))
+    task = float(l_task.item() if torch.is_tensor(l_task) else l_task)
+    ib = float(ib_loss.item() if torch.is_tensor(ib_loss) else ib_loss)
+
+    STEP_LOSS_WRITER.writerow(
+        {
+            "dataset": args.dataset,
+            "epoch": int(epoch_idx),
+            "local_step": int(local_step),
+            "global_step": int(GLOBAL_STEP),
+            "stage": int(stage),
+            "L_total": task + ib,
+            "L_total_scaled": float(loss_scaled.item() if torch.is_tensor(loss_scaled) else loss_scaled),
+            "L_task": task,
+            "ib_logged": ib,
+            "L_tib_raw": l_tib,
+            "L_lib_raw": l_lib,
+            "L_rib_raw": l_rib,
+            "L_rib_kl_raw": float(loss_dict.get("L_rib_kl", 0.0)),
+            "L_rib_balance_raw": float(loss_dict.get("L_rib_balance", 0.0)),
+            "L_tib_weighted": float(args.alpha_ib) * l_tib,
+            "L_lib_weighted": float(args.alpha_ib) * l_lib,
+            "L_rib_weighted": float(args.selector_rib_weight) * l_rib,
+            "alpha_ib": float(args.alpha_ib),
+            "selector_rib_weight": float(args.selector_rib_weight),
+            "gradient_accumulation_step": int(args.gradient_accumulation_step),
+        }
+    )
+
+
 def _forward_model(model, input_ids, visual, acoustic, label_ids, stage,
                    input_mask=None, segment_ids=None):
+    if args.model_variant == "text_only":
+        base_model = model.module if hasattr(model, "module") else model
+        pad_id = base_model.deberta.config.pad_token_id
+        pad_id = 0 if pad_id is None else pad_id
+        attention_mask = (
+            input_mask.long()
+            if input_mask is not None
+            else input_ids.ne(pad_id).long()
+        )
+        return model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            labels=label_ids,
+            stage=stage,
+        )
+
     fwd_kw = dict(labels=label_ids, stage=stage)
     if simsv2_mmsa_enabled():
         fwd_kw["attention_mask"] = input_mask
@@ -419,11 +632,25 @@ def _forward_model(model, input_ids, visual, acoustic, label_ids, stage,
     return model(input_ids, visual, acoustic, **fwd_kw)
 
 
+def set_router_tau(model, tau):
+    """Set DPR temperature when the selected model actually has a router."""
+    root = model.module if hasattr(model, "module") else model
+    for wrapper_name in ("dberta", "bert"):
+        wrapper = getattr(root, wrapper_name, None)
+        infogate = getattr(wrapper, "infogate", None)
+        router = getattr(infogate, "mselector", None)
+        if router is not None and hasattr(router, "gumbel_tau"):
+            router.gumbel_tau = tau
+            return True
+    return False
+
+
 # ============================================================
 # Train / Eval / Test
 # ============================================================
 
-def train_epoch(model, loader, optimizer, scheduler, stage, ema=None):
+def train_epoch(model, loader, optimizer, scheduler, stage, epoch_idx, ema=None):
+    global GLOBAL_STEP
     model.train()
     total_loss, steps = 0.0, 0
     sum_task, sum_ib = 0.0, 0.0
@@ -462,6 +689,16 @@ def train_epoch(model, loader, optimizer, scheduler, stage, ema=None):
         for k, v in loss_dict.items():
             sum_detail[k] = sum_detail.get(k, 0.0) + v
         steps += 1
+        GLOBAL_STEP += 1
+        write_step_loss(
+            epoch_idx=epoch_idx,
+            local_step=step + 1,
+            stage=stage,
+            l_task=l_task,
+            ib_loss=ib_loss,
+            loss_scaled=loss,
+            loss_dict=loss_dict,
+        )
         
         # Real-time progress monitoring
         train_pbar.set_postfix({"task": f"{l_task.item():.3f}", "ib": f"{ib_loss.item():.3f}", "p_std": f"{loss_dict['pred_std']:.2f}"})
@@ -549,6 +786,22 @@ def selection_kwargs(m):
     return kw
 
 
+def save_predictions_csv(preds, labels, output_path):
+    """Write predictions from the checkpoint selected on development data."""
+    pred_values = np.asarray(preds).reshape(-1)
+    label_values = np.asarray(labels).reshape(-1)
+    if pred_values.shape != label_values.shape:
+        raise ValueError(
+            f"test pred/label shape mismatch: {pred_values.shape} vs "
+            f"{label_values.shape}"
+        )
+    with open(output_path, "w", newline="", encoding="utf-8") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(["sample_index", "true_label", "prediction"])
+        for idx, (label, prediction) in enumerate(zip(label_values, pred_values)):
+            writer.writerow([idx, float(label), float(prediction)])
+
+
 # ============================================================
 # Main
 # ============================================================
@@ -557,6 +810,11 @@ def main():
     print("=" * 60)
     print("InfoGate Training")
     print(f"  Dataset        : {args.dataset}")
+    print(f"  Model variant  : {args.model_variant}")
+    print(f"  Text backbone  : {effective_text_backbone()}")
+    if args.model_variant == "prism":
+        print(f"  Confidence mode: {args.confidence_mode}")
+        print(f"  Routing mode   : {args.routing_mode}")
     if args.dataset == "simsv2":
         print(f"  SIMSv2 mode    : {args.simsv2_feature_mode}")
     print(f"  Epochs         : {args.n_epochs} (stage1: {args.stage1_epochs})")
@@ -575,6 +833,7 @@ def main():
     print(f"  Loss terms     : L_lib={toggle_state(args.use_l_lib)} "
             f"L_rib={toggle_state(args.use_l_rib)}")
     print("=" * 60)
+    init_step_loss_logging()
 
     set_seed(args.seed)
     train_dl, dev_dl, test_dl, n_opt = setup_data()
@@ -589,6 +848,9 @@ def main():
 
     os.makedirs(args.checkpoint_dir, exist_ok=True)
     ckpt_path = os.path.join(args.checkpoint_dir, f"infogate_{args.dataset}_best.pt")
+    best_predictions_path = os.path.join(
+        args.checkpoint_dir, "best_test_predictions.csv"
+    )
     select_start = args.stage1_epochs
     select_higher_is_better = selection_higher_is_better(args.selection_metric)
     best_selection_score = float('-inf') if select_higher_is_better else float('inf')
@@ -609,15 +871,14 @@ def main():
         tau_e = getattr(args, 'gumbel_tau_end', 0.5)
         tau = tau_s + (tau_e - tau_s) * epoch / max(args.n_epochs - 1, 1)
         # Update tau on the model's DPR router (``mselector``)
-        m = model.module if hasattr(model, 'module') else model
-        ig = m.dberta.infogate if hasattr(m, 'dberta') else m.bert.infogate
-        ig.mselector.gumbel_tau = tau
+        has_router = set_router_tau(model, tau)
 
         eval_with_ema = epoch >= args.ema_start_epoch
         if epoch == args.ema_start_epoch:
             ema.reset(model)
         tr_loss, tr_task, tr_ib, tr_detail = train_epoch(
             model, train_dl, optimizer, scheduler, stage,
+            epoch_idx=epoch + 1,
             ema=ema if eval_with_ema else None)
 
         print(f"\nEpoch {epoch + 1}/{args.n_epochs}  [stage {stage}]"
@@ -653,10 +914,11 @@ def main():
                      f"v:{diag_vals.get('conf_v',0):.3f} "
                      f"fused:{diag_vals.get('fusion_conf',0):.3f}]")
             rib_str = f"route_H={diag_vals.get('routing_entropy',0):.3f}"
+            tau_str = f"{tau:.3f}" if has_router else "n/a"
             pred_str = (f"pred=[mean:{diag_vals.get('pred_mean',0):.3f} "
                         f"std:{diag_vals.get('pred_std',0):.3f}]")
             print(f"  Diag  {w_str}  {tgt_str}  {p_str}\n"
-                  f"  Qual  {err_str}  {c_str}  {rib_str}  gumbel_tau={tau:.3f}\n"
+                  f"  Qual  {err_str}  {c_str}  {rib_str}  gumbel_tau={tau_str}\n"
                   f"  Stats {pred_str}")
 
         if eval_with_ema:
@@ -705,13 +967,17 @@ def main():
                         'use_l_rib': args.use_l_rib,
                     },
                     'test_results': best_results,
+                    'test_preds': np.asarray(preds).reshape(-1).copy(),
+                    'test_labels': np.asarray(labels).reshape(-1).copy(),
                     'args': args,
                 }
                 if eval_with_ema:
                     save_dict['ema_state_dict'] = ema.state_dict()
                 torch.save(save_dict, ckpt_path)
+                save_predictions_csv(preds, labels, best_predictions_path)
                 print(f"  >> Best model saved ({args.selection_metric}={selection_score:.6f}, "
                       f"MAE={dev_m['mae']:.4f}, Corr={dev_m['corr']:.4f}) to {ckpt_path}")
+                print(f"  >> Best-test predictions saved to {best_predictions_path}")
 
             if early_patience > 0:
                 improved_for_early_stop = should_save
@@ -794,6 +1060,7 @@ def main():
         print(f"  MAE:   {best_test_results['mae']:.4f}")
         print(f"  Corr:  {best_test_results['corr']:.4f}")
         print(f"  F1:    {best_test_results['f1']:.4f}")
+    close_step_loss_logging()
 
 
 if __name__ == '__main__':

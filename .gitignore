@@ -45,3 +45,6 @@ paper_emnlp_infogate_acl/acl-style-files-master/*.bbl
 paper_emnlp_infogate_acl/acl-style-files-master/*.blg
 paper_emnlp_infogate_acl/acl-style-files-master/*.pdf
 paper_emnlp_infogate_acl/acl-style-files-master/*.synctex.gz
+
+# Process-id files written by nohup launchers
+*.pid

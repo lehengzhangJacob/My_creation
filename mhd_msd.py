@@ -3,13 +3,13 @@ import numpy as np
 from matplotlib.ticker import FormatStrFormatter
 
 methods = {
-    "2": ["FDMER", "MISA" ,"UCMIB-PNS", "AtCAF", "SuCI", "DHMD","MuLOT", "PRISM"],
+    "2": ["Self-MM","FDMER", "MISA" ,"UCMIB-PNS", "AtCAF", "SuCI", "DHMD","RITHM"],
     "3": ["MAG-XLNet", "HKT", "MuLOT", "MIL", "MCL", "MGCL", "DHMD", "PRISM"]
 }
 
 data = {
-    "2": [70.55,70.61, 72.13,  72.13, 70.92, 71.30, 73.97, 75.15],
-    "3": [74.72, 71.42, 76.82, 76.30, 77.94, 77.94, 78.50, 79.41]
+    "2": [68.77,70.55,70.61, 72.13,  72.13, 70.92, 71.30,  75.35],
+    "3": [74.72, 76.47, 76.82, 76.30, 77.94, 77.94, 78.50, 79.41]
 }
 
 datasets = ["2", "3"]
@@ -31,7 +31,7 @@ y_config = {
 }
 
 xlabel_config = {
-    "2": "UR-FUNNY",
+    "2": "UR-FUNNY v2",
     "3": "MUStARD"
 }
 

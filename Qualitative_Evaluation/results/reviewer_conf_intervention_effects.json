@@ -1,0 +1,94 @@
+{
+  "mosei": {
+    "bootstrap_seed": 128,
+    "comparisons": {
+      "inverse": {
+        "ci95_lower": 0.004062414480942527,
+        "ci95_upper": 0.006133244750778957,
+        "delta_mae_intervention_minus_original": 0.0050982077079081934,
+        "intervention_mae": 0.5044595860983858,
+        "n": 4643,
+        "original_mae": 0.4993613783904776,
+        "paired_bootstrap_p_two_sided": 0.00019998000199980003
+      },
+      "modality": {
+        "ci95_lower": -0.00012154855467330953,
+        "ci95_upper": 0.0003007498090184505,
+        "delta_mae_intervention_minus_original": 8.829052301475567e-05,
+        "intervention_mae": 0.49944966891349235,
+        "n": 4643,
+        "original_mae": 0.4993613783904776,
+        "paired_bootstrap_p_two_sided": 0.40175982401759824
+      },
+      "shuffle": {
+        "ci95_lower": -8.247067502734092e-05,
+        "ci95_upper": 0.00037968655952498945,
+        "delta_mae_intervention_minus_original": 0.0001454776104426502,
+        "intervention_mae": 0.49950685600092026,
+        "n": 4643,
+        "original_mae": 0.4993613783904776,
+        "paired_bootstrap_p_two_sided": 0.21397860213978603
+      },
+      "uniform": {
+        "ci95_lower": 0.07886497503501166,
+        "ci95_upper": 0.09817811385540871,
+        "delta_mae_intervention_minus_original": 0.08863343367356692,
+        "intervention_mae": 0.5879948120640445,
+        "n": 4643,
+        "original_mae": 0.4993613783904776,
+        "paired_bootstrap_p_two_sided": 0.00019998000199980003
+      }
+    },
+    "dataset": "mosei",
+    "difference_definition": "MAE(intervention) - MAE(original)",
+    "n_bootstrap": 10000,
+    "positive_delta_means": "intervention is worse",
+    "source": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/Qualitative_Evaluation/results/mosei_trial70_full_conf_interventions_predictions.csv"
+  },
+  "simsv2": {
+    "bootstrap_seed": 128,
+    "comparisons": {
+      "inverse": {
+        "ci95_lower": 0.010843059816487798,
+        "ci95_upper": 0.019185480409629672,
+        "delta_mae_intervention_minus_original": 0.014976229594310662,
+        "intervention_mae": 0.3056776120031984,
+        "n": 1034,
+        "original_mae": 0.2907013824088877,
+        "paired_bootstrap_p_two_sided": 0.00019998000199980003
+      },
+      "modality": {
+        "ci95_lower": 0.0020117670023359893,
+        "ci95_upper": 0.004864952767855979,
+        "delta_mae_intervention_minus_original": 0.0034198669790573115,
+        "intervention_mae": 0.29412124938794504,
+        "n": 1034,
+        "original_mae": 0.2907013824088877,
+        "paired_bootstrap_p_two_sided": 0.00019998000199980003
+      },
+      "shuffle": {
+        "ci95_lower": 0.0019079240784319244,
+        "ci95_upper": 0.00476311488942616,
+        "delta_mae_intervention_minus_original": 0.0033137693098697603,
+        "intervention_mae": 0.2940151517187575,
+        "n": 1034,
+        "original_mae": 0.2907013824088877,
+        "paired_bootstrap_p_two_sided": 0.00019998000199980003
+      },
+      "uniform": {
+        "ci95_lower": 0.024949544175380277,
+        "ci95_upper": 0.04068616177473303,
+        "delta_mae_intervention_minus_original": 0.03273209447862591,
+        "intervention_mae": 0.3234334768875136,
+        "n": 1034,
+        "original_mae": 0.2907013824088877,
+        "paired_bootstrap_p_two_sided": 0.00019998000199980003
+      }
+    },
+    "dataset": "simsv2",
+    "difference_definition": "MAE(intervention) - MAE(original)",
+    "n_bootstrap": 10000,
+    "positive_delta_means": "intervention is worse",
+    "source": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/Qualitative_Evaluation/results/simsv2_trial53_full_conf_interventions_predictions.csv"
+  }
+}

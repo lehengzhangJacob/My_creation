@@ -1,0 +1,26 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mustard_hcf_s128/checkpoints/infogate_mustard_best.pt",
+  "command": [
+    "/root/autodl-tmp/anaconda3/envs/ITHP5090/bin/python",
+    "-u",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/train_fixed_mustard_s2_local_trial134.py",
+    "--seed",
+    "128",
+    "--checkpoint-dir",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mustard_hcf_s128/checkpoints"
+  ],
+  "cuda_visible_devices": "0",
+  "cwd": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation",
+  "elapsed_seconds": 326.52550426870584,
+  "ended_at": "2026-07-14T10:49:13.882606+00:00",
+  "experiment_id": "mustard_hcf_s128",
+  "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mustard_hcf_s128.log",
+  "manifest_entry_sha256": "a87623a13c6663e3ee59d2636e3a2e0ef9e3b7d221e79a04eddf33b82f9c5d28",
+  "pid": 334962,
+  "predictions": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mustard_hcf_s128/checkpoints/best_test_predictions.csv",
+  "return_code": 0,
+  "schema_version": 1,
+  "started_at": "2026-07-14T10:43:47.357116+00:00",
+  "status": "success",
+  "temporary_log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/.mustard_hcf_s128.log.110648.running"
+}

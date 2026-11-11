@@ -8,17 +8,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+from classify_hparams_common import (
+    CONFIDENCE_MODE_CHOICES,
+    ROUTING_MODE_CHOICES,
+)
 from ur_funny_trial162_hparams import PAPER_TEST_METRICS, build_train_argv
-
-
-def _override_seed_in_argv(argv: list[str], seed: int) -> list[str]:
-    out = list(argv)
-    try:
-        i = out.index("--seed")
-        out[i + 1] = str(int(seed))
-    except (ValueError, IndexError) as exc:
-        raise RuntimeError("build_train_argv did not emit --seed") from exc
-    return out
 
 
 def _default_checkpoint_dir(my_creation: Path, ablation: str) -> Path:
@@ -58,6 +52,15 @@ def main() -> int:
     )
     ap.add_argument("--dry-run", action="store_true", help="Print train_classify.py invocation and exit")
     ap.add_argument("--seed", type=int, default=None, help="Override train_classify.py --seed")
+    ap.add_argument(
+        "--disable-hcf", action="store_true",
+        help="Run the three-modality control without handcrafted features.")
+    ap.add_argument(
+        "--confidence-mode", choices=CONFIDENCE_MODE_CHOICES, default=None,
+        help="Override InfoGate confidence granularity.")
+    ap.add_argument(
+        "--routing-mode", choices=ROUTING_MODE_CHOICES, default=None,
+        help="Override primary-modality routing.")
     args = ap.parse_args()
 
     ckpt = (
@@ -67,9 +70,14 @@ def main() -> int:
     )
 
     train_py = here / "train_classify.py"
-    argv = build_train_argv(checkpoint_dir=str(ckpt), ablation=args.ablation)
-    if args.seed is not None:
-        argv = _override_seed_in_argv(argv, args.seed)
+    argv = build_train_argv(
+        checkpoint_dir=str(ckpt),
+        ablation=args.ablation,
+        seed=args.seed,
+        disable_hcf=args.disable_hcf,
+        confidence_mode=args.confidence_mode,
+        routing_mode=args.routing_mode,
+    )
 
     cmd = [sys.executable, "-u", str(train_py), *argv]
     if args.dry_run:

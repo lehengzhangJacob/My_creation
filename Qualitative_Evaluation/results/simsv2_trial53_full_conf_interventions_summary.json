@@ -1,0 +1,63 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/simsv2_tier3_fresh_trial53/checkpoints/infogate_simsv2_best.pt",
+  "confidence_scope": "primary_and_auxiliary_infogate_inputs",
+  "split": "test",
+  "summaries": [
+    {
+      "acc2": 0.8007736943907157,
+      "acc3": 0.7340425531914894,
+      "acc5": 0.5560928433268859,
+      "corr": 0.7050384543915877,
+      "dataset": "simsv2",
+      "f1": 0.8012591341625512,
+      "mae": 0.2906824302070592,
+      "mode": "original",
+      "n": 1034
+    },
+    {
+      "acc2": 0.7940038684719536,
+      "acc3": 0.7311411992263056,
+      "acc5": 0.5493230174081238,
+      "corr": 0.699723560487317,
+      "dataset": "simsv2",
+      "f1": 0.7943796593504059,
+      "mae": 0.29410726316381297,
+      "mode": "modality",
+      "n": 1034
+    },
+    {
+      "acc2": 0.7794970986460348,
+      "acc3": 0.7243713733075435,
+      "acc5": 0.5241779497098646,
+      "corr": 0.6646522102810465,
+      "dataset": "simsv2",
+      "f1": 0.7797534257961636,
+      "mae": 0.32341989325413506,
+      "mode": "uniform",
+      "n": 1034
+    },
+    {
+      "acc2": 0.7940038684719536,
+      "acc3": 0.730174081237911,
+      "acc5": 0.5473887814313346,
+      "corr": 0.6999701835382305,
+      "dataset": "simsv2",
+      "f1": 0.7943796593504059,
+      "mae": 0.29400321464927964,
+      "mode": "shuffle",
+      "n": 1034
+    },
+    {
+      "acc2": 0.7901353965183753,
+      "acc3": 0.7195357833655706,
+      "acc5": 0.5299806576402321,
+      "corr": 0.6831943321255589,
+      "dataset": "simsv2",
+      "f1": 0.789969225919869,
+      "mae": 0.305671374613466,
+      "mode": "inverse",
+      "n": 1034
+    }
+  ],
+  "uniform_definition": "1/L on valid tokens in every bottleneck dimension"
+}

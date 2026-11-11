@@ -11,16 +11,6 @@ from pathlib import Path
 from mosi_more_trial39_hparams import build_train_argv
 
 
-def _override_seed_in_argv(argv: list[str], seed: int) -> list[str]:
-    out = list(argv)
-    try:
-        i = out.index("--seed")
-        out[i + 1] = str(int(seed))
-    except (ValueError, IndexError) as exc:
-        raise RuntimeError("build_train_argv did not emit --seed") from exc
-    return out
-
-
 def _default_checkpoint_dir(my_creation: Path, ablation: str) -> Path:
     base = my_creation / "ablation_study/runs"
     if ablation == "none":
@@ -67,6 +57,47 @@ def main() -> int:
         default=None,
         help="Override train.py --seed (default: frozen TRIAL_39_PARAMS['seed']=128)",
     )
+    ap.add_argument("--model", default=None, help="Override train.py --model.")
+    ap.add_argument(
+        "--text-backbone",
+        choices=("auto", "deberta", "bert"),
+        default=None,
+        help="Override train.py --text_backbone.",
+    )
+    ap.add_argument(
+        "--model-variant",
+        choices=("prism", "text_only"),
+        default=None,
+        help="Override train.py --model_variant.",
+    )
+    ap.add_argument(
+        "--confidence-mode",
+        choices=("token", "modality", "uniform"),
+        default=None,
+        help="Override train.py --confidence_mode.",
+    )
+    ap.add_argument(
+        "--routing-mode",
+        choices=("gumbel", "argmax", "soft", "batch_gumbel"),
+        default=None,
+        help="Override train.py --routing_mode.",
+    )
+    ap.add_argument(
+        "--disable-l-rib",
+        action="store_true",
+        help="Pass train.py --disable_l_rib.",
+    )
+    ap.add_argument(
+        "--step-loss-csv",
+        default=None,
+        help="Optional path passed to train.py --step_loss_csv.",
+    )
+    ap.add_argument(
+        "--step-loss-log-interval",
+        type=int,
+        default=1,
+        help="Optional value passed to train.py --step_loss_log_interval.",
+    )
     args = ap.parse_args()
 
     ckpt = (
@@ -76,9 +107,20 @@ def main() -> int:
     )
 
     train_py = here / "train.py"
-    argv = build_train_argv(checkpoint_dir=str(ckpt), ablation=args.ablation)
-    if args.seed is not None:
-        argv = _override_seed_in_argv(argv, args.seed)
+    argv = build_train_argv(
+        checkpoint_dir=str(ckpt),
+        ablation=args.ablation,
+        seed=args.seed,
+        model=args.model,
+        text_backbone=args.text_backbone,
+        model_variant=args.model_variant,
+        confidence_mode=args.confidence_mode,
+        routing_mode=args.routing_mode,
+        disable_l_rib=args.disable_l_rib,
+    )
+    if args.step_loss_csv:
+        argv.extend(["--step_loss_csv", str(Path(args.step_loss_csv).expanduser().resolve())])
+        argv.extend(["--step_loss_log_interval", str(int(args.step_loss_log_interval))])
     cmd = [sys.executable, "-u", str(train_py), *argv]
     if args.dry_run:
         print("cwd:", my_creation)

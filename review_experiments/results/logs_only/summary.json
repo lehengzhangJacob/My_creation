@@ -1,0 +1,1534 @@
+{
+  "counts": {
+    "complete": 31,
+    "invalid": 0,
+    "missing": 14
+  },
+  "generated_at": "2026-10-13T08:40:39.796659+00:00",
+  "headline_policy": {
+    "forbid": "best test epoch / test-oracle metrics",
+    "report": "test metrics from the development-selected checkpoint",
+    "selection_split": "development"
+  },
+  "manifest": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/manifest.json",
+  "results": [
+    {
+      "action": "train",
+      "args": null,
+      "condition": "text_only_deberta_clean",
+      "dataset": "mosi",
+      "epoch": 50,
+      "experiment_id": "mosi_text_only_deberta_s128",
+      "family": "backbone",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosi_text_only_deberta_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosi_text_only_deberta_s128/checkpoints/infogate_mosi_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosi_text_only_deberta_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.655978,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8779,
+        "acc7": 0.4409,
+        "corr": 0.8464,
+        "f1": 0.8778,
+        "mae": 0.6729
+      },
+      "warnings": []
+    },
+    {
+      "action": "external_running",
+      "args": null,
+      "condition": "prism_bert_base_uncased",
+      "dataset": "mosi",
+      "epoch": null,
+      "experiment_id": "mosi_prism_bert_s128",
+      "family": "backbone",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": null,
+        "source": null
+      },
+      "seed": 128,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "text_only_deberta_clean",
+      "dataset": "mosei",
+      "epoch": 5,
+      "experiment_id": "mosei_text_only_deberta_s128",
+      "family": "backbone",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_text_only_deberta_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_text_only_deberta_s128/checkpoints/infogate_mosei_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_text_only_deberta_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.50173,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8737999999999999,
+        "acc7": 0.5449,
+        "corr": 0.7986,
+        "f1": 0.8733,
+        "mae": 0.5165
+      },
+      "warnings": []
+    },
+    {
+      "action": "external_running",
+      "args": null,
+      "condition": "prism_bert_base_uncased",
+      "dataset": "mosei",
+      "epoch": null,
+      "experiment_id": "mosei_prism_bert_s128",
+      "family": "backbone",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": null,
+        "source": null
+      },
+      "seed": 128,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "modality",
+      "dataset": "mosei",
+      "epoch": 38,
+      "experiment_id": "mosei_confidence_modality_s128",
+      "family": "confidence",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_confidence_modality_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_confidence_modality_s128/checkpoints/infogate_mosei_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_confidence_modality_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.489024,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8644,
+        "acc7": 0.5617,
+        "corr": 0.7985,
+        "f1": 0.8648,
+        "mae": 0.5001
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "uniform_1_over_l",
+      "dataset": "mosei",
+      "epoch": 50,
+      "experiment_id": "mosei_confidence_uniform_s128",
+      "family": "confidence",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_confidence_uniform_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_confidence_uniform_s128/checkpoints/infogate_mosei_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_confidence_uniform_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.510829,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8456,
+        "acc7": 0.5378000000000001,
+        "corr": 0.7958,
+        "f1": 0.8474,
+        "mae": 0.5274
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "modality",
+      "dataset": "simsv2",
+      "epoch": 37,
+      "experiment_id": "simsv2_confidence_modality_s128",
+      "family": "confidence",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_modality_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_modality_s128/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_confidence_modality_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.3207,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7892,
+        "acc3": 0.7186,
+        "acc5": 0.5406,
+        "corr": 0.6849,
+        "f1": 0.7901,
+        "mae": 0.3009
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "uniform_1_over_l",
+      "dataset": "simsv2",
+      "epoch": 39,
+      "experiment_id": "simsv2_confidence_uniform_s128",
+      "family": "confidence",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_uniform_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_uniform_s128/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_confidence_uniform_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.321923,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7892,
+        "acc3": 0.7321,
+        "acc5": 0.5619,
+        "corr": 0.6824,
+        "f1": 0.7899,
+        "mae": 0.3109
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "argmax",
+      "dataset": "mosei",
+      "epoch": 40,
+      "experiment_id": "mosei_router_argmax_s128",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_argmax_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_argmax_s128/checkpoints/infogate_mosei_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_router_argmax_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.501644,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8351000000000001,
+        "acc7": 0.5598,
+        "corr": 0.7994,
+        "f1": 0.8376,
+        "mae": 0.5152
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "soft",
+      "dataset": "mosei",
+      "epoch": 42,
+      "experiment_id": "mosei_router_soft_s128",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_soft_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_soft_s128/checkpoints/infogate_mosei_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_router_soft_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.494217,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.871,
+        "acc7": 0.5546,
+        "corr": 0.8013,
+        "f1": 0.8697,
+        "mae": 0.4998
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "batch_gumbel",
+      "dataset": "mosei",
+      "epoch": 49,
+      "experiment_id": "mosei_router_batch_gumbel_s128",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_batch_gumbel_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_batch_gumbel_s128/checkpoints/infogate_mosei_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_router_batch_gumbel_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.489728,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8737999999999999,
+        "acc7": 0.5619,
+        "corr": 0.7995,
+        "f1": 0.8723,
+        "mae": 0.4987
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "gumbel_no_routing_supervision",
+      "dataset": "mosei",
+      "epoch": 39,
+      "experiment_id": "mosei_router_no_supervision_s128",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_no_supervision_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_no_supervision_s128/checkpoints/infogate_mosei_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_router_no_supervision_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.491521,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8706999999999999,
+        "acc7": 0.5542,
+        "corr": 0.8032,
+        "f1": 0.8707,
+        "mae": 0.5004
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "argmax",
+      "dataset": "simsv2",
+      "epoch": 36,
+      "experiment_id": "simsv2_router_argmax_s128",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_argmax_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_argmax_s128/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_argmax_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.323281,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7824,
+        "acc3": 0.7147,
+        "acc5": 0.53,
+        "corr": 0.6611,
+        "f1": 0.7828,
+        "mae": 0.3209
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "soft",
+      "dataset": "simsv2",
+      "epoch": 19,
+      "experiment_id": "simsv2_router_soft_s128",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_soft_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_soft_s128/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_soft_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.305603,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7853,
+        "acc3": 0.7263,
+        "acc5": 0.5638000000000001,
+        "corr": 0.7201,
+        "f1": 0.7865,
+        "mae": 0.2878
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "batch_gumbel",
+      "dataset": "simsv2",
+      "epoch": 39,
+      "experiment_id": "simsv2_router_batch_gumbel_s128",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_batch_gumbel_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_batch_gumbel_s128/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_batch_gumbel_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.314139,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.795,
+        "acc3": 0.7379000000000001,
+        "acc5": 0.5648,
+        "corr": 0.6966,
+        "f1": 0.7961,
+        "mae": 0.2964
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "gumbel_no_routing_supervision",
+      "dataset": "simsv2",
+      "epoch": 31,
+      "experiment_id": "simsv2_router_no_supervision_s128",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_no_supervision_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_no_supervision_s128/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_no_supervision_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.316235,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7968999999999999,
+        "acc3": 0.7408,
+        "acc5": 0.5579999999999999,
+        "corr": 0.6964,
+        "f1": 0.7978,
+        "mae": 0.3053
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "hcf",
+      "dataset": "ur_funny",
+      "epoch": 12,
+      "experiment_id": "ur_funny_hcf_s128",
+      "family": "hcf",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/ur_funny_hcf_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/ur_funny_hcf_s128/checkpoints/infogate_ur_funny_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/ur_funny_hcf_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "binary_acc",
+      "selection_score": 0.735714,
+      "status": "complete",
+      "task": "binary",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7323999999999999,
+        "f1": 0.7323000000000001
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "no_hcf",
+      "dataset": "ur_funny",
+      "epoch": 11,
+      "experiment_id": "ur_funny_no_hcf_s128",
+      "family": "hcf",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/ur_funny_no_hcf_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/ur_funny_no_hcf_s128/checkpoints/infogate_ur_funny_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/ur_funny_no_hcf_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "binary_acc",
+      "selection_score": 0.733673,
+      "status": "complete",
+      "task": "binary",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7284,
+        "f1": 0.7283
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "hcf",
+      "dataset": "mustard",
+      "epoch": 31,
+      "experiment_id": "mustard_hcf_s128",
+      "family": "hcf",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mustard_hcf_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mustard_hcf_s128/checkpoints/infogate_mustard_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mustard_hcf_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "binary_acc",
+      "selection_score": 0.720588,
+      "status": "complete",
+      "task": "binary",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.6912,
+        "f1": 0.6895
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "no_hcf",
+      "dataset": "mustard",
+      "epoch": 18,
+      "experiment_id": "mustard_no_hcf_s128",
+      "family": "hcf",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": true,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mustard_no_hcf_s128/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mustard_no_hcf_s128/checkpoints/infogate_mustard_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mustard_no_hcf_s128.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "binary_acc",
+      "selection_score": 0.647059,
+      "status": "complete",
+      "task": "binary",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.6324000000000001,
+        "f1": 0.6304
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "full_token_gumbel_deberta",
+      "dataset": "mosi",
+      "epoch": 22,
+      "experiment_id": "mosi_full_deberta_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosi_more_trial39/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.604996,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8901,
+        "acc7": 0.508,
+        "corr": 0.8557,
+        "f1": 0.8898,
+        "mae": 0.6056
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "no_confidence",
+      "dataset": "mosi",
+      "epoch": 32,
+      "experiment_id": "mosi_no_conf_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosi_more_trial39_no_conf/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.598798,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8702,
+        "acc7": 0.4964,
+        "corr": 0.8518,
+        "f1": 0.8698,
+        "mae": 0.6086
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "fixed_text_primary",
+      "dataset": "mosi",
+      "epoch": 31,
+      "experiment_id": "mosi_fixed_text_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosi_more_trial39_no_mselector/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.588299,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8763,
+        "acc7": 0.4818,
+        "corr": 0.853,
+        "f1": 0.8762,
+        "mae": 0.6198
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "no_infogate",
+      "dataset": "mosi",
+      "epoch": 43,
+      "experiment_id": "mosi_no_infogate_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosi_more_trial39_no_infogate/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.576773,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8641,
+        "acc7": 0.48469999999999996,
+        "corr": 0.8453,
+        "f1": 0.8643,
+        "mae": 0.6252
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "full_token_gumbel_deberta",
+      "dataset": "mosei",
+      "epoch": 50,
+      "experiment_id": "mosei_full_deberta_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosei_phase1_trial70/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.489355,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8740000000000001,
+        "acc7": 0.5598,
+        "corr": 0.7995,
+        "f1": 0.8726,
+        "mae": 0.4994
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "no_confidence",
+      "dataset": "mosei",
+      "epoch": 38,
+      "experiment_id": "mosei_no_conf_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosei_phase1_trial70_no_conf/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.493101,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8453,
+        "acc7": 0.5598,
+        "corr": 0.7894,
+        "f1": 0.8474,
+        "mae": 0.5076
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "fixed_text_primary",
+      "dataset": "mosei",
+      "epoch": 33,
+      "experiment_id": "mosei_fixed_text_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosei_phase1_trial70_no_mselector/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.494355,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8693000000000001,
+        "acc7": 0.5531,
+        "corr": 0.7968,
+        "f1": 0.8691,
+        "mae": 0.5095
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "no_infogate",
+      "dataset": "mosei",
+      "epoch": 46,
+      "experiment_id": "mosei_no_infogate_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosei_phase1_trial70_no_infogate/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.499137,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8715,
+        "acc7": 0.5421,
+        "corr": 0.8003,
+        "f1": 0.8708,
+        "mae": 0.5092
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "no_adaptive_gate",
+      "dataset": "mosei",
+      "epoch": 40,
+      "experiment_id": "mosei_no_adaptive_gate_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosei_phase1_trial70_no_adaptive_gate/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.486763,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8554999999999999,
+        "acc7": 0.5563,
+        "corr": 0.7971,
+        "f1": 0.8567,
+        "mae": 0.5026
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "full_token_gumbel",
+      "dataset": "simsv2",
+      "epoch": 28,
+      "experiment_id": "simsv2_full_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/simsv2_tier3_fresh_trial53/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.313531,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.8008,
+        "acc3": 0.7340000000000001,
+        "acc5": 0.5561,
+        "corr": 0.705,
+        "f1": 0.8013,
+        "mae": 0.2907
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "no_confidence",
+      "dataset": "simsv2",
+      "epoch": 17,
+      "experiment_id": "simsv2_no_conf_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/simsv2_tier3_fresh_trial53_no_conf/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.316438,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7901,
+        "acc3": 0.7243999999999999,
+        "acc5": 0.56,
+        "corr": 0.6912,
+        "f1": 0.7909,
+        "mae": 0.3011
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "fixed_text_primary",
+      "dataset": "simsv2",
+      "epoch": 22,
+      "experiment_id": "simsv2_fixed_text_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/simsv2_tier3_fresh_trial53_no_mselector/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.342136,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7718,
+        "acc3": 0.7176,
+        "acc5": 0.5347999999999999,
+        "corr": 0.6567,
+        "f1": 0.7725,
+        "mae": 0.3216
+      },
+      "warnings": []
+    },
+    {
+      "action": "reuse",
+      "args": null,
+      "condition": "no_infogate",
+      "dataset": "simsv2",
+      "epoch": 18,
+      "experiment_id": "simsv2_no_infogate_s128_reuse",
+      "family": "existing_control",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": null
+      },
+      "provenance": {
+        "checkpoint": null,
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/simsv2_tier3_fresh_trial53_no_infogate/train.log",
+        "source": "log"
+      },
+      "seed": 128,
+      "selection_metric": "mae",
+      "selection_score": 0.347056,
+      "status": "complete",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {
+        "acc2": 0.7707999999999999,
+        "acc3": 0.7118000000000001,
+        "acc5": 0.5145000000000001,
+        "corr": 0.6242,
+        "f1": 0.7708,
+        "mae": 0.345
+      },
+      "warnings": []
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "modality",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_confidence_modality_s42",
+      "family": "confidence",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_modality_s42/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_modality_s42/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_confidence_modality_s42.log",
+        "source": null
+      },
+      "seed": 42,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "uniform_1_over_l",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_confidence_uniform_s42",
+      "family": "confidence",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_uniform_s42/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_uniform_s42/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_confidence_uniform_s42.log",
+        "source": null
+      },
+      "seed": 42,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "argmax",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_router_argmax_s42",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_argmax_s42/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_argmax_s42/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_argmax_s42.log",
+        "source": null
+      },
+      "seed": 42,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "batch_gumbel",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_router_batch_gumbel_s42",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_batch_gumbel_s42/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_batch_gumbel_s42/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_batch_gumbel_s42.log",
+        "source": null
+      },
+      "seed": 42,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "gumbel_no_routing_supervision",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_router_no_supervision_s42",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_no_supervision_s42/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_no_supervision_s42/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_no_supervision_s42.log",
+        "source": null
+      },
+      "seed": 42,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "soft",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_router_soft_s42",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_soft_s42/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_soft_s42/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_soft_s42.log",
+        "source": null
+      },
+      "seed": 42,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "modality",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_confidence_modality_s2024",
+      "family": "confidence",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_modality_s2024/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_modality_s2024/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_confidence_modality_s2024.log",
+        "source": null
+      },
+      "seed": 2024,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "uniform_1_over_l",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_confidence_uniform_s2024",
+      "family": "confidence",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_uniform_s2024/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_uniform_s2024/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_confidence_uniform_s2024.log",
+        "source": null
+      },
+      "seed": 2024,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "argmax",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_router_argmax_s2024",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_argmax_s2024/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_argmax_s2024/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_argmax_s2024.log",
+        "source": null
+      },
+      "seed": 2024,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "batch_gumbel",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_router_batch_gumbel_s2024",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_batch_gumbel_s2024/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_batch_gumbel_s2024/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_batch_gumbel_s2024.log",
+        "source": null
+      },
+      "seed": 2024,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "gumbel_no_routing_supervision",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_router_no_supervision_s2024",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_no_supervision_s2024/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_no_supervision_s2024/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_no_supervision_s2024.log",
+        "source": null
+      },
+      "seed": 2024,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    },
+    {
+      "action": "train",
+      "args": null,
+      "condition": "soft",
+      "dataset": "simsv2",
+      "epoch": null,
+      "experiment_id": "simsv2_router_soft_s2024",
+      "family": "routing",
+      "headline": "development-selected checkpoint test result",
+      "predictions": {
+        "available": false,
+        "n": null,
+        "path": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_soft_s2024/checkpoints/best_test_predictions.csv"
+      },
+      "provenance": {
+        "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_soft_s2024/checkpoints/infogate_simsv2_best.pt",
+        "explicit_import": false,
+        "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_soft_s2024.log",
+        "source": null
+      },
+      "seed": 2024,
+      "selection_metric": null,
+      "selection_score": null,
+      "status": "missing",
+      "task": "regression",
+      "test_oracle": false,
+      "test_results": {},
+      "warnings": [
+        "no checkpoint or log is available; this experiment has not been collected"
+      ]
+    }
+  ],
+  "schema_version": 1
+}

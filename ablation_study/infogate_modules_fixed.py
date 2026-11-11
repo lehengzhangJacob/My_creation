@@ -352,11 +352,11 @@ class InfoGateModule(nn.Module):
 # ============================================================
 
 class MSelector(nn.Module):
-    """Differentiable Primary Router (DPR): dynamic primary modality with Gumbel-Softmax.
+    """Differentiable Primary Router (DPR) with configurable routing.
 
     Operates on **VTB bottleneck** sequences (not raw MODS-style pooled features).
-    Training: Gumbel-Softmax with straight-through hard samples → differentiable
-    Inference: deterministic argmax
+    The default ``gumbel`` mode preserves the original behavior: straight-through
+    hard Gumbel-Softmax during training and deterministic argmax at inference.
 
     ``num_modalities`` defaults to 3 (acoustic / language / visual) for the
     regression path. When set to 4, HCF becomes a 4th candidate primary and
@@ -364,13 +364,21 @@ class MSelector(nn.Module):
     ``W_a`` / ``W_l`` / ``W_v`` layers — the 3-way state dict still loads
     cleanly for regression checkpoints.
     """
-    def __init__(self, hidden_dim, num_modalities=3, gumbel_tau=1.0):
+    def __init__(self, hidden_dim, num_modalities=3, gumbel_tau=1.0,
+                 routing_mode='gumbel'):
         super().__init__()
         assert num_modalities in (3, 4), \
             f"MSelector: num_modalities must be 3 or 4, got {num_modalities}"
+        allowed_routing_modes = {'gumbel', 'argmax', 'soft', 'batch_gumbel'}
+        if routing_mode not in allowed_routing_modes:
+            raise ValueError(
+                f"Unknown routing_mode={routing_mode!r}; "
+                f"expected one of {sorted(allowed_routing_modes)}"
+            )
         self.hidden_dim = hidden_dim
         self.num_modalities = num_modalities
         self.gumbel_tau = gumbel_tau          # annealed externally
+        self.routing_mode = routing_mode
         self.W_a = nn.Linear(hidden_dim, 1)
         self.W_l = nn.Linear(hidden_dim, 1)
         self.W_v = nn.Linear(hidden_dim, 1)
@@ -391,19 +399,51 @@ class MSelector(nn.Module):
         return torch.bmm(attn.transpose(1, 2), H).squeeze(1)
 
     def _route(self, pooled_list):
-        """Shared Gumbel-softmax routing. ``pooled_list`` is a list of ``[B, D]``."""
+        """Route pooled modalities; all return tensors retain batch dimensions."""
         logits = self.mlp(torch.cat(pooled_list, dim=-1))  # [B, num_modalities]
 
-        if self.training:
-            # Gumbel-Softmax: hard one-hot in forward, soft gradient in backward
-            primary_onehot = F.gumbel_softmax(logits, tau=self.gumbel_tau, hard=True)
-            # Soft weights use the same logits (no gumbel noise) for stable scaling
-            weights = F.softmax(logits / self.gumbel_tau, dim=-1)
+        if self.routing_mode == 'gumbel':
+            # Keep this branch verbatim so the default path remains numerically
+            # identical to the frozen implementation.
+            if self.training:
+                # Gumbel-Softmax: hard one-hot in forward, soft gradient in backward
+                primary_onehot = F.gumbel_softmax(logits, tau=self.gumbel_tau, hard=True)
+                # Soft weights use the same logits (no gumbel noise) for stable scaling
+                weights = F.softmax(logits / self.gumbel_tau, dim=-1)
+            else:
+                weights = F.softmax(logits, dim=-1)
+                primary_onehot = F.one_hot(
+                    torch.argmax(weights, dim=-1),
+                    num_classes=self.num_modalities).float()
+        elif self.routing_mode == 'batch_gumbel':
+            # The hard primary is selected from batch-mean logits and shared.
+            # Per-sample soft weights stay compatible with L_rib and diagnostics.
+            shared_logits = logits.mean(dim=0, keepdim=True)
+            if self.training:
+                shared_primary = F.gumbel_softmax(
+                    shared_logits, tau=self.gumbel_tau, hard=True)
+                weights = F.softmax(logits / self.gumbel_tau, dim=-1)
+            else:
+                weights = F.softmax(logits, dim=-1)
+                shared_primary = F.one_hot(
+                    torch.argmax(shared_logits, dim=-1),
+                    num_classes=self.num_modalities).float()
+            primary_onehot = shared_primary.expand(logits.size(0), -1)
         else:
-            weights = F.softmax(logits, dim=-1)
-            primary_onehot = F.one_hot(
-                torch.argmax(weights, dim=-1),
-                num_classes=self.num_modalities).float()
+            if self.training:
+                weights = F.softmax(logits / self.gumbel_tau, dim=-1)
+            else:
+                weights = F.softmax(logits, dim=-1)
+            if self.routing_mode == 'soft':
+                # The primary is a differentiable mixture rather than a hard route.
+                primary_onehot = weights
+            else:  # argmax
+                # one_hot(argmax(.)) is detached from logits, so the task loss
+                # cannot train the hard primary decision. ``weights`` remains
+                # differentiable for L_rib and auxiliary scaling.
+                primary_onehot = F.one_hot(
+                    torch.argmax(weights, dim=-1),
+                    num_classes=self.num_modalities).float()
 
         primary_idx = torch.argmax(primary_onehot, dim=-1)
         return weights, primary_onehot, primary_idx
@@ -486,6 +526,20 @@ class InfoGate(nn.Module):
         self.selector_balance_weight = args.get('selector_balance_weight', 0.0)
         self.selector_rib_weight = args.get('selector_rib_weight', 0.05)
         self.bottleneck_dim = bn_dim
+        self.confidence_mode = args.get('confidence_mode', 'token')
+        self.routing_mode = args.get('routing_mode', 'gumbel')
+        allowed_confidence_modes = {'token', 'modality', 'uniform'}
+        allowed_routing_modes = {'gumbel', 'argmax', 'soft', 'batch_gumbel'}
+        if self.confidence_mode not in allowed_confidence_modes:
+            raise ValueError(
+                f"Unknown confidence_mode={self.confidence_mode!r}; "
+                f"expected one of {sorted(allowed_confidence_modes)}"
+            )
+        if self.routing_mode not in allowed_routing_modes:
+            raise ValueError(
+                f"Unknown routing_mode={self.routing_mode!r}; "
+                f"expected one of {sorted(allowed_routing_modes)}"
+            )
         # 'regression' (default) or 'binary'. Switches per-modality L_lib / L_rib losses.
         self.task_type = args.get('task_type', 'regression')
 
@@ -529,7 +583,8 @@ class InfoGate(nn.Module):
         # --- 5. DPR router (``MSelector``; Gumbel on VTB sequences) ---
         self.gumbel_tau = args.get('gumbel_tau', 1.0)
         self.mselector = MSelector(bn_dim, num_modalities=num_modalities,
-                                    gumbel_tau=self.gumbel_tau)
+                                    gumbel_tau=self.gumbel_tau,
+                                    routing_mode=self.routing_mode)
 
         # --- 6. InfoGate cross-attention ---
         self.infogate = InfoGateModule(bn_dim, num_layers, num_heads, dropout,
@@ -572,6 +627,30 @@ class InfoGate(nn.Module):
             return tensor.mean(dim=1)
         m = mask.unsqueeze(-1).type_as(tensor)
         return (tensor * m).sum(dim=1) / m.sum(dim=1).clamp_min(1.0)
+
+    def _apply_confidence_mode(self, confidence, mask=None):
+        """Apply the configured confidence granularity to one modality."""
+        if self.confidence_mode == 'token':
+            # Intentional no-op: preserves the original default path exactly,
+            # including its values at padded positions.
+            return confidence
+
+        if mask is None:
+            valid = confidence.new_ones(confidence.shape[:2]).unsqueeze(-1)
+        else:
+            valid = mask.unsqueeze(-1).type_as(confidence)
+
+        if self.confidence_mode == 'modality':
+            denom = (valid.sum(dim=(1, 2), keepdim=True)
+                     * confidence.size(-1)).clamp_min(1.0)
+            scalar = (confidence * valid).sum(
+                dim=(1, 2), keepdim=True) / denom
+            return scalar.expand_as(confidence) * valid
+
+        # uniform: every valid token receives 1/L in every bottleneck
+        # dimension; invalid/padded positions remain exactly zero.
+        lengths = valid.sum(dim=1, keepdim=True).clamp_min(1.0)
+        return confidence.new_ones(confidence.shape) * valid / lengths
 
     # ------------------------------------------------------------------
     # IB loss computation
@@ -673,11 +752,13 @@ class InfoGate(nn.Module):
             B_all_list:    list of length ``N`` (one per modality, in
                            ``self.modality_order``), each [B, T, D]
             conf_all_list: list of length ``N``, each [B, T, D]
-            primary_onehot: [B, N] – Gumbel-Softmax one-hot (differentiable).
+            primary_onehot: [B, N] – hard/ST routing values, or soft
+                            coefficients when ``routing_mode='soft'``.
 
-        The primary branch is a soft-weighted mix of all modalities via
-        ``primary_onehot``. Auxiliary branches are the remaining ``N - 1``
-        streams, sorted by descending DPR soft routing weight.
+        The primary branch mixes modalities using ``primary_onehot`` (the
+        backward-compatible variable name is retained for all modes).
+        Auxiliary branches are the remaining ``N - 1`` streams, sorted by
+        descending DPR soft routing weight.
         """
         Bs = primary_idx.size(0)
         dev = primary_idx.device
@@ -687,7 +768,7 @@ class InfoGate(nn.Module):
         all_B = torch.stack(B_all_list, dim=1)                 # [B, N, T, D]
         all_conf = torch.stack(conf_all_list, dim=1)           # [B, N, T, D]
 
-        # --- Primary: soft mix via one-hot (straight-through differentiable) ---
+        # --- Primary: mix via hard/ST or soft routing coefficients ---
         oh = primary_onehot.unsqueeze(-1).unsqueeze(-1)        # [B, N, 1, 1]
         B_p = (all_B * oh).sum(dim=1)                          # [B, T, D]
         conf_p = (all_conf * oh).sum(dim=1)                    # [B, T, D]
@@ -768,6 +849,11 @@ class InfoGate(nn.Module):
             mu['h'] = mu_h
             lv['h'] = lv_h
             conf['h'] = conf_h
+
+        conf = {
+            m: self._apply_confidence_mode(conf[m], tok_mask)
+            for m in self.modalities
+        }
 
         # 3. Pool for loss computation --------------------------------
         B_pooled = {m: self._masked_mean(B[m], tok_mask) for m in self.modalities}

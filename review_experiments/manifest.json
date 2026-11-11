@@ -1,0 +1,1079 @@
+{
+  "schema_version": 1,
+  "name": "PRISM reviewer experiment matrix",
+  "description": "Seed-128 controlled experiments for reviewer-requested backbone, confidence, routing, and HCF comparisons. Frozen recipes live in ablation_study; this manifest contains overrides only.",
+  "headline_policy": {
+    "selection_split": "development",
+    "report": "test metrics from the development-selected checkpoint",
+    "forbid": "best test epoch / test-oracle metrics"
+  },
+  "defaults": {
+    "seed": 128,
+    "cuda_visible_devices": "0",
+    "working_directory": "..",
+    "runs_directory": "review_experiments/runs",
+    "logs_directory": "review_experiments/logs",
+    "state_directory": "review_experiments/state"
+  },
+  "experiments": [
+    {
+      "id": "mosi_text_only_deberta_s128",
+      "dataset": "mosi",
+      "task": "regression",
+      "family": "backbone",
+      "condition": "text_only_deberta_clean",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_text_only_deberta_mosi.py",
+      "overrides": [
+        "--seed",
+        "128"
+      ],
+      "required_paths": [
+        "deberta-v3-base",
+        "datasets/mosi.pkl"
+      ],
+      "expected_checkpoint": "infogate_mosi_best.pt",
+      "tags": [
+        "new",
+        "backbone",
+        "text-only",
+        "clean-recipe"
+      ]
+    },
+    {
+      "id": "mosi_prism_bert_s128",
+      "dataset": "mosi",
+      "task": "regression",
+      "family": "backbone",
+      "condition": "prism_bert_base_uncased",
+      "seed": 128,
+      "action": "external_running",
+      "source": {
+        "checkpoint": null,
+        "log": null,
+        "predictions": null
+      },
+      "expected_checkpoint": "infogate_mosi_best.pt",
+      "reason": "PRISM+BERT is already running under an external orchestrator. This harness must never launch it; import its dev-selected checkpoint explicitly in the collector.",
+      "tags": [
+        "external-running",
+        "backbone",
+        "prism",
+        "never-launch"
+      ]
+    },
+    {
+      "id": "mosei_text_only_deberta_s128",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "backbone",
+      "condition": "text_only_deberta_clean",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_text_only_deberta_mosei.py",
+      "overrides": [
+        "--seed",
+        "128"
+      ],
+      "required_paths": [
+        "deberta-v3-base",
+        "datasets/mosei.pkl"
+      ],
+      "expected_checkpoint": "infogate_mosei_best.pt",
+      "tags": [
+        "new",
+        "backbone",
+        "text-only",
+        "clean-recipe"
+      ]
+    },
+    {
+      "id": "mosei_prism_bert_s128",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "backbone",
+      "condition": "prism_bert_base_uncased",
+      "seed": 128,
+      "action": "external_running",
+      "source": {
+        "checkpoint": null,
+        "log": null,
+        "predictions": null
+      },
+      "expected_checkpoint": "infogate_mosei_best.pt",
+      "reason": "PRISM+BERT is already running under an external orchestrator. This harness must never launch it; import its dev-selected checkpoint explicitly in the collector.",
+      "tags": [
+        "external-running",
+        "backbone",
+        "prism",
+        "never-launch"
+      ]
+    },
+    {
+      "id": "mosei_confidence_modality_s128",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "confidence",
+      "condition": "modality",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_mosei_phase1_trial70.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--confidence-mode",
+        "modality"
+      ],
+      "required_paths": [
+        "deberta-v3-base",
+        "datasets/mosei.pkl"
+      ],
+      "expected_checkpoint": "infogate_mosei_best.pt",
+      "tags": [
+        "new",
+        "confidence"
+      ]
+    },
+    {
+      "id": "mosei_confidence_uniform_s128",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "confidence",
+      "condition": "uniform_1_over_l",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_mosei_phase1_trial70.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--confidence-mode",
+        "uniform"
+      ],
+      "required_paths": [
+        "deberta-v3-base",
+        "datasets/mosei.pkl"
+      ],
+      "expected_checkpoint": "infogate_mosei_best.pt",
+      "tags": [
+        "new",
+        "confidence"
+      ]
+    },
+    {
+      "id": "simsv2_confidence_modality_s128",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "confidence",
+      "condition": "modality",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--confidence-mode",
+        "modality"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "confidence"
+      ]
+    },
+    {
+      "id": "simsv2_confidence_uniform_s128",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "confidence",
+      "condition": "uniform_1_over_l",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--confidence-mode",
+        "uniform"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "confidence"
+      ]
+    },
+    {
+      "id": "mosei_router_argmax_s128",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "routing",
+      "condition": "argmax",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_mosei_phase1_trial70.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--routing-mode",
+        "argmax"
+      ],
+      "required_paths": [
+        "deberta-v3-base",
+        "datasets/mosei.pkl"
+      ],
+      "expected_checkpoint": "infogate_mosei_best.pt",
+      "tags": [
+        "new",
+        "routing"
+      ]
+    },
+    {
+      "id": "mosei_router_soft_s128",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "routing",
+      "condition": "soft",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_mosei_phase1_trial70.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--routing-mode",
+        "soft"
+      ],
+      "required_paths": [
+        "deberta-v3-base",
+        "datasets/mosei.pkl"
+      ],
+      "expected_checkpoint": "infogate_mosei_best.pt",
+      "tags": [
+        "new",
+        "routing"
+      ]
+    },
+    {
+      "id": "mosei_router_batch_gumbel_s128",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "routing",
+      "condition": "batch_gumbel",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_mosei_phase1_trial70.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--routing-mode",
+        "batch_gumbel"
+      ],
+      "required_paths": [
+        "deberta-v3-base",
+        "datasets/mosei.pkl"
+      ],
+      "expected_checkpoint": "infogate_mosei_best.pt",
+      "tags": [
+        "new",
+        "routing"
+      ]
+    },
+    {
+      "id": "mosei_router_no_supervision_s128",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "routing",
+      "condition": "gumbel_no_routing_supervision",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_mosei_phase1_trial70.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--disable-l-rib"
+      ],
+      "required_paths": [
+        "deberta-v3-base",
+        "datasets/mosei.pkl"
+      ],
+      "expected_checkpoint": "infogate_mosei_best.pt",
+      "tags": [
+        "new",
+        "routing"
+      ]
+    },
+    {
+      "id": "simsv2_router_argmax_s128",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "argmax",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--routing-mode",
+        "argmax"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing"
+      ]
+    },
+    {
+      "id": "simsv2_router_soft_s128",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "soft",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--routing-mode",
+        "soft"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing"
+      ]
+    },
+    {
+      "id": "simsv2_router_batch_gumbel_s128",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "batch_gumbel",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--routing-mode",
+        "batch_gumbel"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing"
+      ]
+    },
+    {
+      "id": "simsv2_router_no_supervision_s128",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "gumbel_no_routing_supervision",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--disable-l-rib"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing"
+      ]
+    },
+    {
+      "id": "ur_funny_hcf_s128",
+      "dataset": "ur_funny",
+      "task": "binary",
+      "family": "hcf",
+      "condition": "hcf",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_ur_funny_trial162.py",
+      "overrides": [
+        "--seed",
+        "128"
+      ],
+      "required_paths": [
+        "albert-base-v2"
+      ],
+      "expected_checkpoint": "infogate_ur_funny_best.pt",
+      "tags": [
+        "new",
+        "hcf"
+      ]
+    },
+    {
+      "id": "ur_funny_no_hcf_s128",
+      "dataset": "ur_funny",
+      "task": "binary",
+      "family": "hcf",
+      "condition": "no_hcf",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_ur_funny_trial162.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--disable-hcf"
+      ],
+      "required_paths": [
+        "albert-base-v2"
+      ],
+      "expected_checkpoint": "infogate_ur_funny_best.pt",
+      "tags": [
+        "new",
+        "hcf"
+      ]
+    },
+    {
+      "id": "mustard_hcf_s128",
+      "dataset": "mustard",
+      "task": "binary",
+      "family": "hcf",
+      "condition": "hcf",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_mustard_s2_local_trial134.py",
+      "overrides": [
+        "--seed",
+        "128"
+      ],
+      "required_paths": [
+        "albert-base-v2"
+      ],
+      "expected_checkpoint": "infogate_mustard_best.pt",
+      "tags": [
+        "new",
+        "hcf"
+      ]
+    },
+    {
+      "id": "mustard_no_hcf_s128",
+      "dataset": "mustard",
+      "task": "binary",
+      "family": "hcf",
+      "condition": "no_hcf",
+      "seed": 128,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_mustard_s2_local_trial134.py",
+      "overrides": [
+        "--seed",
+        "128",
+        "--disable-hcf"
+      ],
+      "required_paths": [
+        "albert-base-v2"
+      ],
+      "expected_checkpoint": "infogate_mustard_best.pt",
+      "tags": [
+        "new",
+        "hcf"
+      ]
+    },
+    {
+      "id": "mosi_full_deberta_s128_reuse",
+      "dataset": "mosi",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "full_token_gumbel_deberta",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/mosi_more_trial39/train.log"
+      },
+      "reason": "Completed frozen full run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "full",
+        "backbone",
+        "confidence",
+        "routing"
+      ]
+    },
+    {
+      "id": "mosi_no_conf_s128_reuse",
+      "dataset": "mosi",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "no_confidence",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/mosi_more_trial39_no_conf/train.log"
+      },
+      "reason": "Completed no-confidence run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "no-confidence"
+      ]
+    },
+    {
+      "id": "mosi_fixed_text_s128_reuse",
+      "dataset": "mosi",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "fixed_text_primary",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/mosi_more_trial39_no_mselector/train.log"
+      },
+      "reason": "Completed no_mselector/fixed-text run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "fixed-text",
+        "routing"
+      ]
+    },
+    {
+      "id": "mosi_no_infogate_s128_reuse",
+      "dataset": "mosi",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "no_infogate",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/mosi_more_trial39_no_infogate/train.log"
+      },
+      "reason": "Completed no-InfoGate run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "no-infogate"
+      ]
+    },
+    {
+      "id": "mosei_full_deberta_s128_reuse",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "full_token_gumbel_deberta",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/mosei_phase1_trial70/train.log"
+      },
+      "reason": "Completed frozen full run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "full",
+        "backbone",
+        "confidence",
+        "routing"
+      ]
+    },
+    {
+      "id": "mosei_no_conf_s128_reuse",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "no_confidence",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/mosei_phase1_trial70_no_conf/train.log"
+      },
+      "reason": "Completed no-confidence run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "no-confidence",
+        "confidence"
+      ]
+    },
+    {
+      "id": "mosei_fixed_text_s128_reuse",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "fixed_text_primary",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/mosei_phase1_trial70_no_mselector/train.log"
+      },
+      "reason": "Completed no_mselector/fixed-text run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "fixed-text",
+        "routing"
+      ]
+    },
+    {
+      "id": "mosei_no_infogate_s128_reuse",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "no_infogate",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/mosei_phase1_trial70_no_infogate/train.log"
+      },
+      "reason": "Completed no-InfoGate run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "no-infogate"
+      ]
+    },
+    {
+      "id": "mosei_no_adaptive_gate_s128_reuse",
+      "dataset": "mosei",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "no_adaptive_gate",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/mosei_phase1_trial70_no_adaptive_gate/train.log"
+      },
+      "reason": "Completed no-adaptive-gate run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "no-adaptive-gate"
+      ]
+    },
+    {
+      "id": "simsv2_full_s128_reuse",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "full_token_gumbel",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/simsv2_tier3_fresh_trial53/train.log"
+      },
+      "reason": "Completed frozen full run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "full",
+        "confidence",
+        "routing"
+      ]
+    },
+    {
+      "id": "simsv2_no_conf_s128_reuse",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "no_confidence",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/simsv2_tier3_fresh_trial53_no_conf/train.log"
+      },
+      "reason": "Completed no-confidence run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "no-confidence",
+        "confidence"
+      ]
+    },
+    {
+      "id": "simsv2_fixed_text_s128_reuse",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "fixed_text_primary",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/simsv2_tier3_fresh_trial53_no_mselector/train.log"
+      },
+      "reason": "Completed no_mselector/fixed-text run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "fixed-text",
+        "routing"
+      ]
+    },
+    {
+      "id": "simsv2_no_infogate_s128_reuse",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "existing_control",
+      "condition": "no_infogate",
+      "seed": 128,
+      "action": "reuse",
+      "source": {
+        "log": "ablation_study/runs/simsv2_tier3_fresh_trial53_no_infogate/train.log"
+      },
+      "reason": "Completed no-InfoGate run; never retrain from this harness.",
+      "tags": [
+        "reuse",
+        "no-infogate"
+      ]
+    },
+    {
+      "id": "simsv2_confidence_modality_s42",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "confidence",
+      "condition": "modality",
+      "seed": 42,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "42",
+        "--confidence-mode",
+        "modality"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "confidence",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_confidence_uniform_s42",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "confidence",
+      "condition": "uniform_1_over_l",
+      "seed": 42,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "42",
+        "--confidence-mode",
+        "uniform"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "confidence",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_router_argmax_s42",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "argmax",
+      "seed": 42,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "42",
+        "--routing-mode",
+        "argmax"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_router_batch_gumbel_s42",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "batch_gumbel",
+      "seed": 42,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "42",
+        "--routing-mode",
+        "batch_gumbel"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_router_no_supervision_s42",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "gumbel_no_routing_supervision",
+      "seed": 42,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "42",
+        "--disable-l-rib"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_router_soft_s42",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "soft",
+      "seed": 42,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "42",
+        "--routing-mode",
+        "soft"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_confidence_modality_s2024",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "confidence",
+      "condition": "modality",
+      "seed": 2024,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "2024",
+        "--confidence-mode",
+        "modality"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "confidence",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_confidence_uniform_s2024",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "confidence",
+      "condition": "uniform_1_over_l",
+      "seed": 2024,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "2024",
+        "--confidence-mode",
+        "uniform"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "confidence",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_router_argmax_s2024",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "argmax",
+      "seed": 2024,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "2024",
+        "--routing-mode",
+        "argmax"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_router_batch_gumbel_s2024",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "batch_gumbel",
+      "seed": 2024,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "2024",
+        "--routing-mode",
+        "batch_gumbel"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_router_no_supervision_s2024",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "gumbel_no_routing_supervision",
+      "seed": 2024,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "2024",
+        "--disable-l-rib"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing",
+        "multiseed"
+      ]
+    },
+    {
+      "id": "simsv2_router_soft_s2024",
+      "dataset": "simsv2",
+      "task": "regression",
+      "family": "routing",
+      "condition": "soft",
+      "seed": 2024,
+      "action": "train",
+      "launcher": "ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+      "overrides": [
+        "--seed",
+        "2024",
+        "--routing-mode",
+        "soft"
+      ],
+      "required_paths": [
+        "bert-base-chinese",
+        "datasets/simsv2.pkl"
+      ],
+      "expected_checkpoint": "infogate_simsv2_best.pt",
+      "tags": [
+        "new",
+        "routing",
+        "multiseed"
+      ]
+    }
+  ],
+  "reusable_assets": [
+    {
+      "id": "mosi_five_seed_summary",
+      "kind": "multi_seed_summary",
+      "path": "Testing_Stability_Analysis/runs/mosi_t39_20260524_133042/summary_stability_metrics.csv",
+      "action": "reuse"
+    },
+    {
+      "id": "mosei_five_seed_summary",
+      "kind": "multi_seed_summary",
+      "path": "Testing_Stability_Analysis/runs/multi_seed_20260513_143529/summary_dev_selected_test_mae.csv",
+      "action": "reuse"
+    },
+    {
+      "id": "mosei_routing_test_csv",
+      "kind": "routing_statistics",
+      "path": "Qualitative_Evaluation/results/mosei_trial70_dpr_test.csv",
+      "action": "reuse"
+    },
+    {
+      "id": "simsv2_routing_test_csv",
+      "kind": "routing_statistics",
+      "path": "Qualitative_Evaluation/results/simsv2_trial53_dpr_test.csv",
+      "action": "reuse"
+    },
+    {
+      "id": "mosi_trial234_no_adaptive_gate_log",
+      "kind": "existing_ablation_log",
+      "path": "ablation_study/runs/mosi_trial234_no_adaptive_gate/train.log",
+      "action": "reuse",
+      "note": "Different frozen MOSI recipe; retain as provenance, not as the trial39 controlled anchor."
+    }
+  ]
+}

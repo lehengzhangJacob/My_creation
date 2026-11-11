@@ -1,0 +1,58 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosei_phase1_trial70/checkpoints/infogate_mosei_best.pt",
+  "confidence_scope": "primary_and_auxiliary_infogate_inputs",
+  "split": "test",
+  "summaries": [
+    {
+      "acc2": 0.8740331491712707,
+      "acc7": 0.5597673917725609,
+      "corr": 0.799450416046457,
+      "dataset": "mosei",
+      "f1": 0.8726351780110838,
+      "mae": 0.4993613783904776,
+      "mode": "original",
+      "n": 4643
+    },
+    {
+      "acc2": 0.8743093922651933,
+      "acc7": 0.5601981477493,
+      "corr": 0.7992377673425493,
+      "dataset": "mosei",
+      "f1": 0.8729522834888767,
+      "mae": 0.49944966891349235,
+      "mode": "modality",
+      "n": 4643
+    },
+    {
+      "acc2": 0.8516574585635359,
+      "acc7": 0.45724746930863663,
+      "corr": 0.7827772159626492,
+      "dataset": "mosei",
+      "f1": 0.8529946292886869,
+      "mae": 0.5879948120640445,
+      "mode": "uniform",
+      "n": 4643
+    },
+    {
+      "acc2": 0.8743093922651933,
+      "acc7": 0.5599827697609304,
+      "corr": 0.7992086148648974,
+      "dataset": "mosei",
+      "f1": 0.8729522834888767,
+      "mae": 0.49950685600092026,
+      "mode": "shuffle",
+      "n": 4643
+    },
+    {
+      "acc2": 0.873756906077348,
+      "acc7": 0.5582597458539738,
+      "corr": 0.799000585460568,
+      "dataset": "mosei",
+      "f1": 0.8723176745091578,
+      "mae": 0.5044595860983858,
+      "mode": "inverse",
+      "n": 4643
+    }
+  ],
+  "uniform_definition": "1/L on valid tokens in every bottleneck dimension"
+}

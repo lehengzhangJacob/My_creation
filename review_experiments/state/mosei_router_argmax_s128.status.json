@@ -1,0 +1,28 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_argmax_s128/checkpoints/infogate_mosei_best.pt",
+  "command": [
+    "/root/autodl-tmp/anaconda3/envs/ITHP5090/bin/python",
+    "-u",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/train_fixed_mosei_phase1_trial70.py",
+    "--seed",
+    "128",
+    "--routing-mode",
+    "argmax",
+    "--checkpoint-dir",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_argmax_s128/checkpoints"
+  ],
+  "cuda_visible_devices": "0",
+  "cwd": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation",
+  "elapsed_seconds": 25867.663149660453,
+  "ended_at": "2026-07-13T10:26:29.014037+00:00",
+  "experiment_id": "mosei_router_argmax_s128",
+  "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_router_argmax_s128.log",
+  "manifest_entry_sha256": "9493a160b57ac884810ca4db1444e289853f24566f62f2a769b38a4391e6e514",
+  "pid": 210194,
+  "predictions": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_router_argmax_s128/checkpoints/best_test_predictions.csv",
+  "return_code": 0,
+  "schema_version": 1,
+  "started_at": "2026-07-13T03:15:21.350930+00:00",
+  "status": "success",
+  "temporary_log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/.mosei_router_argmax_s128.log.110648.running"
+}

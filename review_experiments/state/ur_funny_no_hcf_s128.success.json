@@ -1,0 +1,27 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/ur_funny_no_hcf_s128/checkpoints/infogate_ur_funny_best.pt",
+  "command": [
+    "/root/autodl-tmp/anaconda3/envs/ITHP5090/bin/python",
+    "-u",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/train_fixed_ur_funny_trial162.py",
+    "--seed",
+    "128",
+    "--disable-hcf",
+    "--checkpoint-dir",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/ur_funny_no_hcf_s128/checkpoints"
+  ],
+  "cuda_visible_devices": "0",
+  "cwd": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation",
+  "elapsed_seconds": 2601.100368771702,
+  "ended_at": "2026-07-14T10:43:47.353039+00:00",
+  "experiment_id": "ur_funny_no_hcf_s128",
+  "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/ur_funny_no_hcf_s128.log",
+  "manifest_entry_sha256": "17c2eded70c4fbbe8df9c14fe6ae6e66485c0bdc60673d3e54f938f084b61a6e",
+  "pid": 332258,
+  "predictions": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/ur_funny_no_hcf_s128/checkpoints/best_test_predictions.csv",
+  "return_code": 0,
+  "schema_version": 1,
+  "started_at": "2026-07-14T10:00:26.252701+00:00",
+  "status": "success",
+  "temporary_log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/.ur_funny_no_hcf_s128.log.110648.running"
+}

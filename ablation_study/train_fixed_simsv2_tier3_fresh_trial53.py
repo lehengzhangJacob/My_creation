@@ -50,6 +50,42 @@ def main() -> int:
         ),
     )
     ap.add_argument("--dry-run", action="store_true", help="Print invocation and exit")
+    ap.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Override train.py --seed (default: frozen trial seed 128).",
+    )
+    ap.add_argument("--model", default=None, help="Override train.py --model.")
+    ap.add_argument(
+        "--text-backbone",
+        choices=("auto", "deberta", "bert"),
+        default=None,
+        help="Override train.py --text_backbone.",
+    )
+    ap.add_argument(
+        "--model-variant",
+        choices=("prism", "text_only"),
+        default=None,
+        help="Override train.py --model_variant.",
+    )
+    ap.add_argument(
+        "--confidence-mode",
+        choices=("token", "modality", "uniform"),
+        default=None,
+        help="Override train.py --confidence_mode.",
+    )
+    ap.add_argument(
+        "--routing-mode",
+        choices=("gumbel", "argmax", "soft", "batch_gumbel"),
+        default=None,
+        help="Override train.py --routing_mode.",
+    )
+    ap.add_argument(
+        "--disable-l-rib",
+        action="store_true",
+        help="Pass train.py --disable_l_rib.",
+    )
     args = ap.parse_args()
 
     ckpt = (
@@ -59,7 +95,17 @@ def main() -> int:
     )
 
     train_py = here / "train.py"
-    argv = build_train_argv(checkpoint_dir=str(ckpt), ablation=args.ablation)
+    argv = build_train_argv(
+        checkpoint_dir=str(ckpt),
+        ablation=args.ablation,
+        seed=args.seed,
+        model=args.model,
+        text_backbone=args.text_backbone,
+        model_variant=args.model_variant,
+        confidence_mode=args.confidence_mode,
+        routing_mode=args.routing_mode,
+        disable_l_rib=args.disable_l_rib,
+    )
     cmd = [sys.executable, "-u", str(train_py), *argv]
     if args.dry_run:
         print("cwd:", my_creation)

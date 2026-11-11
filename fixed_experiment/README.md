@@ -195,6 +195,29 @@ cd My_creation && python fixed_experiment/train_fixed_mustard_s2_local_trial134.
 
 ---
 
+## SOTA re-search (Nov 2026) — SIMS-v2 #159, MUStARD #1239, MOSEI DeBERTa #36
+
+Rows that beat every baseline in the 2026-11 Optuna re-search (`sota_search/`). The exact argv of each trial (copied from `sota_search/runs/<row>/trial_<n>/cmd.json`) and its expected test metrics live in [`sota_2026_11_trials.py`](sota_2026_11_trials.py).
+
+| Trial | Expected test metrics | Runtime (3090) |
+|---|---|---|
+| `simsv2_trial159` | Acc5 57.25 / Acc3 73.50 / Acc2 80.08 / F1 80.15 / MAE 0.2904 / Corr 0.7107 | ~54 min |
+| `mustard_trial1239` | Acc 79.41 / F1 79.39 | ~11 min |
+| `mosei_deberta_trial36` | Acc7 56.24 / Acc2 87.40 / F1 87.37 / MAE 0.4988 / Corr 0.8035 | ~11.7 h |
+
+```bash
+cd My_creation
+GPU=1 bash fixed_experiment/run_sota_2026_11.sh mustard_trial1239      # nohup, returns immediately
+python fixed_experiment/train_fixed_sota_2026_11.py --trial simsv2_trial159 --dry-run
+python fixed_experiment/train_fixed_sota_2026_11.py --trial simsv2_trial159 --check-only   # re-compare a finished run
+```
+
+Component ablations reuse the same frozen argv plus one `--ablation` switch (`no_ib` = w/o VTB, `no_mselector` = w/o DPR, `no_infogate` = w/o InfoGate), e.g. `GPU=1 ABLATION=no_ib bash fixed_experiment/run_sota_2026_11.sh simsv2_trial159` → `runs/sota_2026_11/simsv2_trial159_no_ib/`. SIMS-v2 #159 results (paper `tab:ablation`, MAE / Acc5 / Acc2): full 0.290 / 57.3 / 80.1, w/o VTB 0.298 / 56.9 / 79.1, w/o DPR 0.302 / 54.4 / 78.2, w/o InfoGate 0.332 / 52.3 / 78.3.
+
+Output goes to `runs/sota_2026_11/<trial>/` (`train.log`, `check.log`, `checkpoints/`). After training, the launcher compares the final "Best Results" block line by line with the original trial log and prints `EXACT REPRODUCTION` or `MISMATCH` (exit code 0 only on an exact match). Bitwise reproduction is expected only on the same GPU model (RTX 3090) with the `prism` env; other GPUs change dropout masks.
+
+---
+
 ## Paper repro bundle
 
 [`scripts/bundle_paper_repro_to_fixed_experiment.sh`](../scripts/bundle_paper_repro_to_fixed_experiment.sh) copies these `*_hparams.py` files into `fixed_experiment/paper_repro_bundle/frozen/` together with thin launchers.

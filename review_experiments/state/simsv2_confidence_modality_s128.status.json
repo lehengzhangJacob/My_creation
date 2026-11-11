@@ -1,0 +1,28 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_modality_s128/checkpoints/infogate_simsv2_best.pt",
+  "command": [
+    "/root/autodl-tmp/anaconda3/envs/ITHP5090/bin/python",
+    "-u",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+    "--seed",
+    "128",
+    "--confidence-mode",
+    "modality",
+    "--checkpoint-dir",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_modality_s128/checkpoints"
+  ],
+  "cuda_visible_devices": "0",
+  "cwd": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation",
+  "elapsed_seconds": 2049.98986450769,
+  "ended_at": "2026-07-13T02:40:44.945294+00:00",
+  "experiment_id": "simsv2_confidence_modality_s128",
+  "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_confidence_modality_s128.log",
+  "manifest_entry_sha256": "dedeb8a16ceef6d2e18cb579d550cf6033e777e34db0147d4a42dff773aaf4d1",
+  "pid": 207790,
+  "predictions": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_confidence_modality_s128/checkpoints/best_test_predictions.csv",
+  "return_code": 0,
+  "schema_version": 1,
+  "started_at": "2026-07-13T02:06:34.955453+00:00",
+  "status": "success",
+  "temporary_log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/.simsv2_confidence_modality_s128.log.110648.running"
+}

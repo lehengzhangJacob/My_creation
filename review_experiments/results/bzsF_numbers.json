@@ -1,0 +1,202 @@
+[
+  {
+    "id": "mosi_full_deberta_s128_reuse",
+    "metrics": {
+      "Acc-2": 89.01,
+      "Acc-7": 50.8,
+      "MAE": 0.6056,
+      "Corr": 0.8557,
+      "F1": 0.8898
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosi_more_trial39/train.log"
+  },
+  {
+    "id": "mosei_full_deberta_s128_reuse",
+    "metrics": {
+      "Acc-2": 87.4,
+      "Acc-7": 55.98,
+      "MAE": 0.4994,
+      "Corr": 0.7995,
+      "F1": 0.8726
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosei_phase1_trial70/train.log"
+  },
+  {
+    "id": "simsv2_full_s128_reuse",
+    "metrics": {
+      "Acc-2": 80.08,
+      "Acc-5": 55.61,
+      "Acc-3": 73.4,
+      "MAE": 0.2907,
+      "Corr": 0.705,
+      "F1": 0.8013
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/simsv2_tier3_fresh_trial53/train.log"
+  },
+  {
+    "id": "mosi_text_only_deberta_s128",
+    "metrics": {
+      "Acc-2": 87.02,
+      "Acc-7": 48.61,
+      "MAE": 0.6267,
+      "Corr": 0.8474,
+      "F1": 0.8701
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosi_text_only_deberta_s128.log"
+  },
+  {
+    "id": "mosei_text_only_deberta_s128",
+    "metrics": {
+      "Acc-2": 86.05,
+      "Acc-7": 53.87,
+      "MAE": 0.5185,
+      "Corr": 0.7967,
+      "F1": 0.8617
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_text_only_deberta_s128.log"
+  },
+  {
+    "id": "mosei_confidence_modality_s128",
+    "metrics": {
+      "Acc-2": 86.44,
+      "Acc-7": 56.17,
+      "MAE": 0.5001,
+      "Corr": 0.7985,
+      "F1": 0.8648
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_confidence_modality_s128.log"
+  },
+  {
+    "id": "mosei_confidence_uniform_s128",
+    "metrics": {
+      "Acc-2": 84.56,
+      "Acc-7": 53.78,
+      "MAE": 0.5274,
+      "Corr": 0.7958,
+      "F1": 0.8474
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_confidence_uniform_s128.log"
+  },
+  {
+    "id": "simsv2_confidence_modality_s128",
+    "metrics": {
+      "Acc-2": 78.92,
+      "Acc-5": 54.06,
+      "Acc-3": 71.86,
+      "MAE": 0.3009,
+      "Corr": 0.6849,
+      "F1": 0.7901
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_confidence_modality_s128.log"
+  },
+  {
+    "id": "simsv2_confidence_uniform_s128",
+    "metrics": {
+      "Acc-2": 78.92,
+      "Acc-5": 56.19,
+      "Acc-3": 73.21,
+      "MAE": 0.3109,
+      "Corr": 0.6824,
+      "F1": 0.7899
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_confidence_uniform_s128.log"
+  },
+  {
+    "id": "mosei_no_conf_s128_reuse",
+    "metrics": {
+      "Acc-2": 84.53,
+      "Acc-7": 55.98,
+      "MAE": 0.5076,
+      "Corr": 0.7894,
+      "F1": 0.8474
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosei_phase1_trial70_no_conf/train.log"
+  },
+  {
+    "id": "simsv2_no_conf_s128_reuse",
+    "metrics": {
+      "Acc-2": 79.01,
+      "Acc-5": 56.0,
+      "Acc-3": 72.44,
+      "MAE": 0.3011,
+      "Corr": 0.6912,
+      "F1": 0.7909
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/simsv2_tier3_fresh_trial53_no_conf/train.log"
+  },
+  {
+    "id": "mosei_router_argmax_s128",
+    "metrics": {
+      "Acc-2": 83.51,
+      "Acc-7": 55.98,
+      "MAE": 0.5152,
+      "Corr": 0.7994,
+      "F1": 0.8376
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_router_argmax_s128.log"
+  },
+  {
+    "id": "mosei_router_soft_s128",
+    "metrics": {
+      "Acc-2": 87.1,
+      "Acc-7": 55.46,
+      "MAE": 0.4998,
+      "Corr": 0.8013,
+      "F1": 0.8697
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_router_soft_s128.log"
+  },
+  {
+    "id": "mosei_router_batch_gumbel_s128",
+    "metrics": {
+      "Acc-2": 87.38,
+      "Acc-7": 56.19,
+      "MAE": 0.4987,
+      "Corr": 0.7995,
+      "F1": 0.8723
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_router_batch_gumbel_s128.log"
+  },
+  {
+    "id": "mosei_fixed_text_s128_reuse",
+    "metrics": {
+      "Acc-2": 86.93,
+      "Acc-7": 55.31,
+      "MAE": 0.5095,
+      "Corr": 0.7968,
+      "F1": 0.8691
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/mosei_phase1_trial70_no_mselector/train.log"
+  },
+  {
+    "id": "simsv2_fixed_text_s128_reuse",
+    "metrics": {
+      "Acc-2": 77.18,
+      "Acc-5": 53.48,
+      "Acc-3": 71.76,
+      "MAE": 0.3216,
+      "Corr": 0.6567,
+      "F1": 0.7725
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/runs/simsv2_tier3_fresh_trial53_no_mselector/train.log"
+  },
+  {
+    "id": "ur_funny_hcf_s128",
+    "metrics": {
+      "Acc": 73.24,
+      "F1": 73.23
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/ur_funny_hcf_s128.log"
+  },
+  {
+    "id": "mosei_router_no_supervision_s128",
+    "metrics": {
+      "Acc-2": 87.07,
+      "Acc-7": 55.42,
+      "MAE": 0.5004,
+      "Corr": 0.8032,
+      "F1": 0.8707
+    },
+    "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_router_no_supervision_s128.log"
+  }
+]

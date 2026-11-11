@@ -1,0 +1,28 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_batch_gumbel_s128/checkpoints/infogate_simsv2_best.pt",
+  "command": [
+    "/root/autodl-tmp/anaconda3/envs/ITHP5090/bin/python",
+    "-u",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+    "--seed",
+    "128",
+    "--routing-mode",
+    "batch_gumbel",
+    "--checkpoint-dir",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_batch_gumbel_s128/checkpoints"
+  ],
+  "cuda_visible_devices": "0",
+  "cwd": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation",
+  "elapsed_seconds": 2061.7086228989065,
+  "ended_at": "2026-07-14T09:31:49.637713+00:00",
+  "experiment_id": "simsv2_router_batch_gumbel_s128",
+  "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_batch_gumbel_s128.log",
+  "manifest_entry_sha256": "d213fbd684ebad615d662c05e9b4ba3776b53a0740a51e29b4d5ce7dc0b8392a",
+  "pid": 327867,
+  "predictions": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_batch_gumbel_s128/checkpoints/best_test_predictions.csv",
+  "return_code": 0,
+  "schema_version": 1,
+  "started_at": "2026-07-14T08:57:27.929109+00:00",
+  "status": "success",
+  "temporary_log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/.simsv2_router_batch_gumbel_s128.log.110648.running"
+}

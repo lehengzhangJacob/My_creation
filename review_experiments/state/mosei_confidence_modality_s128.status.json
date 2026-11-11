@@ -1,0 +1,28 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_confidence_modality_s128/checkpoints/infogate_mosei_best.pt",
+  "command": [
+    "/root/autodl-tmp/anaconda3/envs/ITHP5090/bin/python",
+    "-u",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/train_fixed_mosei_phase1_trial70.py",
+    "--seed",
+    "128",
+    "--confidence-mode",
+    "modality",
+    "--checkpoint-dir",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_confidence_modality_s128/checkpoints"
+  ],
+  "cuda_visible_devices": "0",
+  "cwd": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation",
+  "elapsed_seconds": 26043.572440529242,
+  "ended_at": "2026-07-12T18:55:00.196388+00:00",
+  "experiment_id": "mosei_confidence_modality_s128",
+  "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosei_confidence_modality_s128.log",
+  "manifest_entry_sha256": "f5da286de0c3451fd542ba43e788e2ddd840bf4304cbd7b9bd958ec3705afa1d",
+  "pid": 144853,
+  "predictions": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosei_confidence_modality_s128/checkpoints/best_test_predictions.csv",
+  "return_code": 0,
+  "schema_version": 1,
+  "started_at": "2026-07-12T11:40:56.623964+00:00",
+  "status": "success",
+  "temporary_log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/.mosei_confidence_modality_s128.log.110648.running"
+}

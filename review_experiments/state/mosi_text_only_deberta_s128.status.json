@@ -1,0 +1,26 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosi_text_only_deberta_s128/checkpoints/infogate_mosi_best.pt",
+  "command": [
+    "/root/autodl-tmp/anaconda3/envs/ITHP5090/bin/python",
+    "-u",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/train_fixed_text_only_deberta_mosi.py",
+    "--seed",
+    "128",
+    "--checkpoint-dir",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosi_text_only_deberta_s128/checkpoints"
+  ],
+  "cuda_visible_devices": "0",
+  "cwd": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation",
+  "elapsed_seconds": 641.3682200722396,
+  "ended_at": "2026-07-15T15:03:30.707171+00:00",
+  "experiment_id": "mosi_text_only_deberta_s128",
+  "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/mosi_text_only_deberta_s128.log",
+  "manifest_entry_sha256": "a367120ada19bcc377f2bfab3741f6b2acea613f367fcba192f043791ef3f914",
+  "pid": 406270,
+  "predictions": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/mosi_text_only_deberta_s128/checkpoints/best_test_predictions.csv",
+  "return_code": 0,
+  "schema_version": 1,
+  "started_at": "2026-07-15T14:52:49.338985+00:00",
+  "status": "success",
+  "temporary_log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/.mosi_text_only_deberta_s128.log.406269.running"
+}

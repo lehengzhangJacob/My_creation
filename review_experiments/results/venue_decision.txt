@@ -1,0 +1,63 @@
+Provisional response and venue decision
+=====================================
+
+Status: the conflict-subset and corruption experiments are scripted but have not
+been run. This machine has no GPU (/dev/nvidia* is absent), so the decision
+rule in the plan cannot be evaluated yet. Do not resubmit until those two
+results exist.
+
+What the existing evidence already shows
+----------------------------------------
+Hard primary selection is language for 99.81% of CMU-MOSEI test samples
+(9 acoustic, 0 visual) and 99.71% of CH-SIMS v2 (3 visual, 0 acoustic).
+See review_experiments/results/nonlanguage_primary.md.
+That is the fact Reviewer 2 used to question the paper's main claim.
+Per-epoch primary shares are in routing_dynamics_{mosei,simsv2,mosi}.csv.
+
+Provisional recommendation
+--------------------------
+1. Run, on the 4090D, in this order:
+   - SIMS v2 seeds 42 and 2024 (manifest entries are already added):
+     conda run -n ITHP5090 python My_creation/review_experiments/launch_review_matrix.py --resume --only 'simsv2_*_s42,simsv2_*_s2024'
+     The launcher --only takes one selector per flag; repeat --only or use a glob.
+   - corrupt_inputs_on_split.py --run
+   - define_conflict_subset.py --dataset simsv2
+     If the pickle has no regression_labels_T/A/V, align the official meta.csv.
+   - MMSA MulT/MISA/Self-MM via run_mmsa_baselines.sh, then evaluate_on_subset.py.
+2. Decision rule, unchanged:
+   - If PRISM beats fixed-text on the SIMS v2 conflict subset
+     (paired-bootstrap MAE interval excludes 0) AND corrupted positions
+     lose VTB confidence while adaptive routing reduces the error:
+     resubmit to Information Fusion as a new manuscript, with the point-by-point
+     letter below.
+   - Otherwise: drop "dynamic primary modality" as the headline.
+     Describe PRISM as confidence-gated, primary-directed fusion, and submit
+     to IEEE TAFFC or IEEE TMM.
+
+Point-by-point letter (fill the bracketed numbers after the GPU runs)
+---------------------------------------------------------------------
+Reviewer 1.
+W1. The introduction now states the hypothesis: one sample has one dominant
+    stream, and the prediction head should read only that stream.
+W2. Cross-attention weights are not a primary designation. They still mix
+    every modality into one vector. DPR commits the head to one stream.
+W3. Related work now contrasts MultiModal-IB, hyper-modality enhancement,
+    and mixture-of-experts routers. DPR does not mix expert outputs.
+W4. Per-epoch hard-primary shares are plotted from the existing training logs
+    (no retraining). Language share rises after the warm-up stage.
+W5. Router variants now include hard argmax and batch-level Gumbel, which are
+    the non-sample-wise alternatives to Gumbel-Softmax.
+Minor. "don't" is now "do not". Floats are figure/figure* again, with a
+    page break before the bibliography. The unrelated Diffusion Bridge row
+    (zero-shot captioning) has been removed from the CH-SIMS v2 table.
+
+Reviewer 2.
+1. Non-language primaries are rare (counts above). Their MAE and confidence
+   are tabulated. Fixed-language, soft, argmax, and Gumbel rows are in
+   Table router-variants; the "Table ??" cross-reference was a duplicate label.
+2-4. [Fill from corrupt_inputs_on_split.py: confidence drop on corrupted
+   positions, error under adaptive vs fixed-clean routing.]
+3. [Fill from evaluate_on_subset.py: conflict vs non-conflict MAE against
+   fixed-text, no-InfoGate, MulT, MISA, and Self-MM.]
+5. Diffusion Bridge is removed. Layout and the unresolved table reference
+   are fixed. A second compile no longer reports multiply-defined table labels.

@@ -77,6 +77,8 @@ class InfoGate_BertModel(BertPreTrainedModel):
             'selector_balance_weight': getattr(multimodal_config, 'selector_balance_weight', 0.0),
             'selector_rib_weight': getattr(multimodal_config, 'selector_rib_weight', 0.05),
             'gumbel_tau': getattr(multimodal_config, 'gumbel_tau_start', 1.0),
+            'confidence_mode': getattr(multimodal_config, 'confidence_mode', 'token'),
+            'routing_mode': getattr(multimodal_config, 'routing_mode', 'gumbel'),
             'task_type': getattr(multimodal_config, 'task_type', 'regression'),
             'ablation': getattr(multimodal_config, 'ablation', 'none'),
         }

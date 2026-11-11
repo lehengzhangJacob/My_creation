@@ -48,6 +48,18 @@ def _worker_python() -> str:
     return sys.executable
 
 
+def _tmp_root() -> Path:
+    """Keep temporary checkpoints off the small system /tmp partition."""
+    root = (
+        os.environ.get("MODEL_COMPLEXITY_TMPDIR")
+        or os.environ.get("TMPDIR")
+        or str(_HERE / "tmp")
+    )
+    path = Path(root).expanduser().resolve()
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 _CASE_TO_SPEC = {
     # Current paper rows: MOSI more/mosi trial 39 and MOSEI phase1 trial 70.
     "mosi": {
@@ -89,12 +101,48 @@ def _load_train_module(train_py: Path):
     return mod
 
 
-class _FlopMeasuringWrapper(nn.Module):
-    """Expose a single forward(args...) for fvcore/thop; includes IB path (stage=1)."""
+def _simsv2_mmsa_enabled(ft) -> bool:
+    fn = getattr(ft, "simsv2_mmsa_enabled", None)
+    return bool(fn()) if callable(fn) else False
 
-    def __init__(self, core: nn.Module) -> None:
+
+def _unpack_loader_batch(ft, batch, device: torch.device):
+    batch = tuple(t.to(device) for t in batch)
+    unpack = getattr(ft, "unpack_simsv2_batch", None)
+    if callable(unpack):
+        input_ids, visual, acoustic, label_ids, input_mask, segment_ids = unpack(
+            batch,
+            _simsv2_mmsa_enabled(ft),
+        )
+    else:
+        input_ids, visual, acoustic, label_ids = batch[:4]
+        input_mask, segment_ids = None, None
+    visual = visual.squeeze(1)
+    acoustic = acoustic.squeeze(1)
+    return input_ids, visual, acoustic, label_ids, input_mask, segment_ids
+
+
+def _forward_model(ft, model, input_ids, visual, acoustic, label_ids, stage: int, input_mask=None, segment_ids=None):
+    fwd = getattr(ft, "_forward_model", None)
+    if callable(fwd):
+        return fwd(model, input_ids, visual, acoustic, label_ids, stage, input_mask, segment_ids)
+
+    kwargs = {"labels": label_ids, "stage": stage}
+    if input_mask is not None:
+        kwargs["attention_mask"] = input_mask
+    if segment_ids is not None:
+        kwargs["token_type_ids"] = segment_ids
+    return model(input_ids, visual, acoustic, **kwargs)
+
+
+class _FlopMeasuringWrapper(nn.Module):
+    """Expose one forward for fvcore/thop at a specific training stage."""
+
+    def __init__(self, ft, core: nn.Module, stage: int) -> None:
         super().__init__()
+        self.ft = ft
         self.core = core
+        self.stage = int(stage)
 
     def forward(
         self,
@@ -102,22 +150,36 @@ class _FlopMeasuringWrapper(nn.Module):
         visual: torch.Tensor,
         acoustic: torch.Tensor,
         labels: torch.Tensor,
+        *extra: torch.Tensor,
     ) -> torch.Tensor:
-        logits, ib_loss, _, _ = self.core(
-            input_ids, visual, acoustic, labels=labels, stage=1,
+        input_mask = extra[0] if len(extra) >= 1 else None
+        segment_ids = extra[1] if len(extra) >= 2 else None
+        logits, ib_loss, _, _ = _forward_model(
+            self.ft,
+            self.core,
+            input_ids,
+            visual,
+            acoustic,
+            labels,
+            self.stage,
+            input_mask,
+            segment_ids,
         )
         return logits.sum() + ib_loss
 
 
-def _count_flops(wrapper: nn.Module, batch: tuple[torch.Tensor, ...]) -> tuple[float | None, str, str | None]:
-    input_ids, visual, acoustic, labels = batch
-    inputs = (input_ids, visual, acoustic, labels)
+def _count_flops(
+    wrapper: nn.Module,
+    inputs: tuple[torch.Tensor, ...],
+    *,
+    train_mode: bool = True,
+) -> tuple[float | None, str, str | None]:
     err: str | None = None
     try:
         from fvcore.nn import FlopCountAnalysis  # type: ignore
 
         was_training = wrapper.training
-        wrapper.train()
+        wrapper.train(train_mode)
         try:
             total = FlopCountAnalysis(wrapper, inputs).total()
         finally:
@@ -128,27 +190,46 @@ def _count_flops(wrapper: nn.Module, batch: tuple[torch.Tensor, ...]) -> tuple[f
     try:
         from thop import profile  # type: ignore
 
-        wrapper.train()
-        macs, _params = profile(wrapper, inputs=inputs, verbose=False)
-        flops = 2.0 * float(macs)
-        return flops, "thop", None
+        was_training = wrapper.training
+        wrapper.train(train_mode)
+        try:
+            macs, _params = profile(wrapper, inputs=inputs, verbose=False)
+            flops = 2.0 * float(macs)
+            return flops, "thop", None
+        finally:
+            wrapper.train(was_training)
     except Exception as e2:  # noqa: BLE001
         err = (err or "") + f"|thop:{e2!r}"
     return None, "none", err
 
 
-def _microbatch_from_loader(train_dl, device: torch.device):
+def _microbatch_from_loader(ft, train_dl, device: torch.device):
     batch = next(iter(train_dl))
-    batch = tuple(t.to(device) for t in batch)
-    input_ids, visual, acoustic, label_ids = batch
-    visual = visual.squeeze(1)
-    acoustic = acoustic.squeeze(1)
-    return input_ids, visual, acoustic, label_ids
+    return _unpack_loader_batch(ft, batch, device)
 
 
-def _one_step_loss(model, args, input_ids, visual, acoustic, label_ids, stage: int):
-    logits, ib_loss, loss_dict, _ = model(
-        input_ids, visual, acoustic, labels=label_ids, stage=stage,
+def _one_step_loss(
+    ft,
+    model,
+    args,
+    input_ids,
+    visual,
+    acoustic,
+    label_ids,
+    input_mask,
+    segment_ids,
+    stage: int,
+):
+    logits, ib_loss, loss_dict, _ = _forward_model(
+        ft,
+        model,
+        input_ids,
+        visual,
+        acoustic,
+        label_ids,
+        stage,
+        input_mask,
+        segment_ids,
     )
     pred_flat = logits.view(-1)
     label_flat = label_ids.view(-1)
@@ -169,10 +250,14 @@ def _peak_memory_microbatch(ft, model, optimizer, train_dl) -> float | None:
     device = ft.DEVICE
     model.train()
     optimizer.zero_grad()
-    input_ids, visual, acoustic, label_ids = _microbatch_from_loader(train_dl, device)
+    input_ids, visual, acoustic, label_ids, input_mask, segment_ids = _unpack_loader_batch(
+        ft, next(iter(train_dl)), device,
+    )
     torch.cuda.reset_peak_memory_stats()
     torch.cuda.synchronize()
-    loss = _one_step_loss(model, ft.args, input_ids, visual, acoustic, label_ids, stage=1)
+    loss = _one_step_loss(
+        ft, model, ft.args, input_ids, visual, acoustic, label_ids, input_mask, segment_ids, stage=1,
+    )
     loss.backward()
     torch.cuda.synchronize()
     return torch.cuda.max_memory_allocated() / (1024.0 ** 3)
@@ -195,29 +280,131 @@ def _peak_memory_accum_window(ft, model, optimizer, train_dl) -> float | None:
         except StopIteration:
             it = iter(train_dl)
             batch = next(it)
-        batch = tuple(t.to(device) for t in batch)
-        input_ids, visual, acoustic, label_ids = batch
-        visual = visual.squeeze(1)
-        acoustic = acoustic.squeeze(1)
-        loss = _one_step_loss(model, ft.args, input_ids, visual, acoustic, label_ids, stage=1)
+        input_ids, visual, acoustic, label_ids, input_mask, segment_ids = _unpack_loader_batch(
+            ft, batch, device,
+        )
+        loss = _one_step_loss(
+            ft, model, ft.args, input_ids, visual, acoustic, label_ids, input_mask, segment_ids, stage=1,
+        )
         loss.backward()
     torch.cuda.synchronize()
     return torch.cuda.max_memory_allocated() / (1024.0 ** 3)
 
 
-def _dummy_batch_for_flops(ft, model):
-    args = ft.args
+def _flop_inputs_from_loader(ft, loader) -> tuple[torch.Tensor, ...]:
     device = ft.DEVICE
-    B = int(args.train_batch_size)
-    L = int(args.max_seq_length)
-    mod = ft
-    vdim = mod.VISUAL_DIM
-    adim = mod.ACOUSTIC_DIM
-    input_ids = torch.zeros((B, L), dtype=torch.long, device=device)
-    visual = torch.randn(B, L, vdim, device=device, dtype=torch.float32)
-    acoustic = torch.randn(B, L, adim, device=device, dtype=torch.float32)
-    labels = torch.randn(B, device=device, dtype=torch.float32)
-    return input_ids, visual, acoustic, labels
+    input_ids, visual, acoustic, label_ids, input_mask, segment_ids = _unpack_loader_batch(
+        ft,
+        next(iter(loader)),
+        device,
+    )
+    parts: list[torch.Tensor] = [input_ids, visual, acoustic, label_ids]
+    if input_mask is not None:
+        parts.append(input_mask)
+    if segment_ids is not None:
+        parts.append(segment_ids)
+    return tuple(parts)
+
+
+def _profile_forward_flops(ft, model, loader, *, stage: int, train_mode: bool) -> dict[str, Any]:
+    wrapper = _FlopMeasuringWrapper(ft, model, stage=stage)
+    inputs = _flop_inputs_from_loader(ft, loader)
+    flops, backend, err = _count_flops(wrapper, inputs, train_mode=train_mode)
+    return {"flops": flops, "backend": backend, "error": err}
+
+
+def _combine_flop_backend(profiles: dict[str, dict[str, Any]]) -> str:
+    backends = {str(p.get("backend")) for p in profiles.values() if p.get("backend") != "none"}
+    if not backends:
+        return "none"
+    if len(backends) == 1:
+        return next(iter(backends))
+    return "mixed:" + ",".join(sorted(backends))
+
+
+def _combine_flop_errors(profiles: dict[str, dict[str, Any]]) -> str | None:
+    errors = [
+        f"{name}:{profile.get('error')}"
+        for name, profile in profiles.items()
+        if profile.get("error")
+    ]
+    return "|".join(errors) if errors else None
+
+
+def _profile_default_flops(ft, model, train_dl) -> dict[str, Any]:
+    return _profile_forward_flops(ft, model, train_dl, stage=1, train_mode=True)
+
+
+def _profile_full_training_flops(ft, model, train_dl, dev_dl, test_dl) -> dict[str, Any]:
+    profiles: dict[str, dict[str, Any]] = {}
+    for stage in (1, 2):
+        profiles[f"train_stage{stage}_forward"] = _profile_forward_flops(
+            ft, model, train_dl, stage=stage, train_mode=True,
+        )
+        profiles[f"dev_stage{stage}_forward"] = _profile_forward_flops(
+            ft, model, dev_dl, stage=stage, train_mode=False,
+        )
+        profiles[f"test_stage{stage}_forward"] = _profile_forward_flops(
+            ft, model, test_dl, stage=stage, train_mode=False,
+        )
+    return {
+        "profiles": profiles,
+        "backend": _combine_flop_backend(profiles),
+        "error": _combine_flop_errors(profiles),
+    }
+
+
+def _estimate_full_training_flops(
+    flop_profile: dict[str, Any] | None,
+    epoch_stages: list[int],
+    *,
+    train_batches: int,
+    dev_batches: int,
+    test_batches: int,
+) -> dict[str, Any]:
+    if not flop_profile or not epoch_stages:
+        return {
+            "flops_avg_epoch": None,
+            "flops_total_training": None,
+            "flops_error": None if flop_profile else "missing full-training FLOP profile",
+        }
+
+    profiles = flop_profile.get("profiles", {})
+    epoch_totals: list[float] = []
+    for stage in epoch_stages:
+        keys = (
+            f"train_stage{stage}_forward",
+            f"dev_stage{stage}_forward",
+            f"test_stage{stage}_forward",
+        )
+        try:
+            train_fwd = profiles[keys[0]]["flops"]
+            dev_fwd = profiles[keys[1]]["flops"]
+            test_fwd = profiles[keys[2]]["flops"]
+        except KeyError as exc:
+            return {
+                "flops_avg_epoch": None,
+                "flops_total_training": None,
+                "flops_error": f"missing profile {exc!r}",
+            }
+        if train_fwd is None or dev_fwd is None or test_fwd is None:
+            return {
+                "flops_avg_epoch": None,
+                "flops_total_training": None,
+                "flops_error": flop_profile.get("error") or "one or more FLOP profiles failed",
+            }
+        epoch_totals.append(
+            3.0 * float(train_fwd) * float(train_batches)
+            + float(dev_fwd) * float(dev_batches)
+            + float(test_fwd) * float(test_batches)
+        )
+
+    total = float(sum(epoch_totals))
+    return {
+        "flops_avg_epoch": total / float(len(epoch_totals)),
+        "flops_total_training": total,
+        "flops_error": flop_profile.get("error"),
+    }
 
 
 class _QuietTqdm:
@@ -241,7 +428,12 @@ def _float_metrics(metrics: dict[str, Any] | None) -> dict[str, float] | None:
     return {str(k): float(v) for k, v in metrics.items()}
 
 
-def _time_full_training_run(ft) -> dict[str, Any]:
+def _time_full_training_run(
+    ft,
+    *,
+    flop_profile: dict[str, Any] | None = None,
+    max_epochs: int | None = None,
+) -> dict[str, Any]:
     """Run the trainer's full epoch loop once and measure complete per-epoch cost."""
     args = ft.args
     ft.set_seed(args.seed)
@@ -263,18 +455,25 @@ def _time_full_training_run(ft) -> dict[str, Any]:
     no_improve_epochs = 0
     early_stopped = False
     epoch_secs: list[float] = []
+    epoch_stages: list[int] = []
+    n_epochs_to_run = int(args.n_epochs)
+    if max_epochs is not None:
+        n_epochs_to_run = max(1, min(n_epochs_to_run, int(max_epochs)))
 
     old_tqdm = getattr(ft, "tqdm", None)
     ft.tqdm = _quiet_tqdm
     if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.reset_peak_memory_stats()
         torch.cuda.synchronize()
     total_t0 = time.perf_counter()
     try:
-        for epoch in range(args.n_epochs):
+        for epoch in range(n_epochs_to_run):
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
             epoch_t0 = time.perf_counter()
             stage = 1 if epoch < args.stage1_epochs else 2
+            epoch_stages.append(stage)
 
             tau_s = getattr(args, "gumbel_tau_start", 1.0)
             tau_e = getattr(args, "gumbel_tau_end", 0.5)
@@ -292,6 +491,7 @@ def _time_full_training_run(ft) -> dict[str, Any]:
                 optimizer,
                 scheduler,
                 stage,
+                epoch + 1,
                 ema=ema if eval_with_ema else None,
             )
 
@@ -386,7 +586,7 @@ def _time_full_training_run(ft) -> dict[str, Any]:
             epoch_secs.append(epoch_sec)
             print(
                 f"[full-training] {args.dataset} epoch {last_completed_epoch}/"
-                f"{args.n_epochs}: {epoch_sec:.2f}s",
+                f"{n_epochs_to_run}: {epoch_sec:.2f}s",
                 file=sys.stderr,
                 flush=True,
             )
@@ -404,17 +604,39 @@ def _time_full_training_run(ft) -> dict[str, Any]:
 
     if torch.cuda.is_available():
         torch.cuda.synchronize()
+        peak_gib = torch.cuda.max_memory_allocated() / (1024.0 ** 3)
+    else:
+        peak_gib = None
     total_sec = time.perf_counter() - total_t0
     avg_sec = (sum(epoch_secs) / len(epoch_secs)) if epoch_secs else None
+    flop_est = _estimate_full_training_flops(
+        flop_profile,
+        epoch_stages,
+        train_batches=len(train_dl),
+        dev_batches=len(dev_dl),
+        test_batches=len(test_dl),
+    )
 
     return {
         "full_training_time": True,
         "train_total_sec": total_sec,
         "epoch_avg_sec": avg_sec,
+        "epoch_sec": avg_sec,
         "epoch_secs": epoch_secs,
         "epochs_completed": int(last_completed_epoch),
         "n_epochs_config": int(args.n_epochs),
+        "n_epochs_measured": int(n_epochs_to_run),
+        "full_training_max_epochs": None if max_epochs is None else int(max_epochs),
         "early_stopped": bool(early_stopped),
+        "peak_mem_gib": peak_gib,
+        "memory_mode": "full_training_loop",
+        "flops_forward": flop_est["flops_avg_epoch"],
+        "flops_avg_epoch": flop_est["flops_avg_epoch"],
+        "flops_total_training": flop_est["flops_total_training"],
+        "flops_backend": None if flop_profile is None else flop_profile.get("backend"),
+        "flops_error": flop_est["flops_error"],
+        "flops_profile": None if flop_profile is None else flop_profile.get("profiles"),
+        "flops_protocol": "avg_epoch_est_train3x_eval1x_stage_weighted",
         "selection_metric": args.selection_metric,
         "best_selection_score": (
             None
@@ -431,6 +653,7 @@ def measure_worker(
     *,
     skip_epoch_time: bool = False,
     full_training_time: bool = False,
+    full_training_max_epochs: int | None = None,
 ) -> dict[str, Any]:
     os.environ.setdefault("TQDM_DISABLE", "1")
     if str(_MY_CREATION) not in sys.path:
@@ -440,32 +663,37 @@ def measure_worker(
     hp_path = spec["hparams"]
     train_py = spec["train_py"]
     build_train_argv = _load_build_train_argv(hp_path)
-    with tempfile.TemporaryDirectory() as tmp:
+    with tempfile.TemporaryDirectory(dir=str(_tmp_root())) as tmp:
         argv = build_train_argv(checkpoint_dir=tmp)
         sys.argv = [str(spec["argv0"]), *argv]
 
         ft = _load_train_module(train_py)
         args = ft.args
-        train_dl, _dev_dl, _test_dl, n_opt = ft.setup_data()
+        train_dl, dev_dl, test_dl, n_opt = ft.setup_data()
         model, optimizer, scheduler = ft.build_model(n_opt)
 
         total_p = sum(p.numel() for p in model.parameters())
         train_p = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
         # CUDA warmup (not counted toward peak memory).
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and not full_training_time:
             optimizer.zero_grad()
-            b0 = _microbatch_from_loader(train_dl, ft.DEVICE)
-            loss0 = _one_step_loss(model, args, *b0, stage=1)
+            b0 = _microbatch_from_loader(ft, train_dl, ft.DEVICE)
+            loss0 = _one_step_loss(ft, model, args, *b0, stage=1)
             loss0.backward()
             optimizer.zero_grad()
             torch.cuda.synchronize()
 
-        # Peak memory: one microbatch or a full accum window (after warmup).
-        if memory_full_accum:
+        # Peak memory: one-step probe by default; full mode measures the actual loop.
+        if full_training_time:
+            peak_gib = None
+            memory_mode = "full_training_loop"
+        elif memory_full_accum:
             peak_gib = _peak_memory_accum_window(ft, model, optimizer, train_dl)
+            memory_mode = "accum_window"
         else:
             peak_gib = _peak_memory_microbatch(ft, model, optimizer, train_dl)
+            memory_mode = "single_microbatch"
 
         n_batches = len(train_dl)
         epoch_sec: float | None
@@ -475,14 +703,20 @@ def measure_worker(
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
             t0 = time.perf_counter()
-            ft.train_epoch(model, train_dl, optimizer, scheduler, stage=1, ema=None)
+            ft.train_epoch(model, train_dl, optimizer, scheduler, stage=1, epoch_idx=1, ema=None)
             if torch.cuda.is_available():
                 torch.cuda.synchronize()
             epoch_sec = time.perf_counter() - t0
 
-        wrap = _FlopMeasuringWrapper(model)
-        flop_batch = _dummy_batch_for_flops(ft, model)
-        flops, flop_backend, flop_err = _count_flops(wrap, flop_batch)
+        if full_training_time:
+            full_flop_profile = _profile_full_training_flops(ft, model, train_dl, dev_dl, test_dl)
+            default_flop_profile = full_flop_profile["profiles"]["train_stage1_forward"]
+        else:
+            full_flop_profile = None
+            default_flop_profile = _profile_default_flops(ft, model, train_dl)
+        flops = default_flop_profile["flops"]
+        flop_backend = default_flop_profile["backend"]
+        flop_err = default_flop_profile["error"]
 
         result = {
             "case": case,
@@ -496,17 +730,23 @@ def measure_worker(
             "flops_backend": flop_backend,
             "flops_error": flop_err,
             "peak_mem_gib": peak_gib,
-            "memory_mode": "accum_window" if memory_full_accum else "single_microbatch",
+            "memory_mode": memory_mode,
             "epoch_sec": epoch_sec,
             "train_batches_per_epoch": int(n_batches),
         }
 
-        del wrap, flop_batch, model, optimizer, scheduler, train_dl
+        del model, optimizer, scheduler, train_dl, dev_dl, test_dl
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
         if full_training_time:
-            result.update(_time_full_training_run(ft))
+            result.update(
+                _time_full_training_run(
+                    ft,
+                    flop_profile=full_flop_profile,
+                    max_epochs=full_training_max_epochs,
+                ),
+            )
 
         return result
 
@@ -516,6 +756,7 @@ def _run_worker_subprocess(
     memory_full_accum: bool,
     skip_epoch_time: bool,
     full_training_time: bool,
+    full_training_max_epochs: int | None,
 ) -> dict[str, Any]:
     cmd = [
         _worker_python(),
@@ -530,6 +771,8 @@ def _run_worker_subprocess(
         cmd.append("--skip-epoch-time")
     if full_training_time:
         cmd.append("--full-training-time")
+    if full_training_max_epochs is not None:
+        cmd.extend(["--full-training-max-epochs", str(int(full_training_max_epochs))])
     proc = subprocess.run(
         cmd,
         cwd=str(_MY_CREATION),
@@ -549,7 +792,7 @@ def _run_worker_subprocess(
     return json.loads(lines[-1])
 
 
-def _md_row(r: dict[str, Any]) -> str:
+def _md_row(r: dict[str, Any], *, full_mode: bool) -> str:
     def fmt_flops(x: Any) -> str:
         if x is None:
             return "—"
@@ -562,8 +805,9 @@ def _md_row(r: dict[str, Any]) -> str:
             return f"{xf/1e6:.2f}M"
         return f"{xf:.2e}"
 
-    flops_s = fmt_flops(r.get("flops_forward"))
-    if r.get("flops_backend") == "none" and r.get("flops_error"):
+    flops_key = "flops_avg_epoch" if full_mode else "flops_forward"
+    flops_s = fmt_flops(r.get(flops_key))
+    if flops_s == "—" and r.get("flops_error"):
         flops_s = f"— ({r['flops_error'][:80]}…)" if len(str(r.get("flops_error"))) > 80 else f"— ({r.get('flops_error')})"
 
     mem = r.get("peak_mem_gib")
@@ -571,29 +815,42 @@ def _md_row(r: dict[str, Any]) -> str:
 
     es = r.get("epoch_sec")
     epoch_s = f"{float(es):.2f}" if es is not None else "—"
-    avg_es = r.get("epoch_avg_sec")
-    avg_epoch_s = f"{float(avg_es):.2f}" if avg_es is not None else "—"
-    total_ts = r.get("train_total_sec")
-    total_train_s = f"{float(total_ts):.2f}" if total_ts is not None else "—"
-    epochs = r.get("epochs_completed")
-    epochs_s = str(int(epochs)) if epochs is not None else "—"
+
+    if full_mode:
+        total_ts = r.get("train_total_sec")
+        total_train_s = f"{float(total_ts):.2f}" if total_ts is not None else "—"
+        epochs = r.get("epochs_completed")
+        epochs_s = str(int(epochs)) if epochs is not None else "—"
+        return (
+            f"| {r['case']} | {r['params_total']:,} | {r['params_trainable']:,} | {flops_s} | "
+            f"{mem_s} | {epoch_s} | {total_train_s} | {epochs_s} | "
+            f"{r['train_batches_per_epoch']} | "
+            f"{r['train_batch_size']}×{r['gradient_accumulation_step']} | {r['max_seq_length']} |"
+        )
 
     return (
         f"| {r['case']} | {r['params_total']:,} | {r['params_trainable']:,} | {flops_s} | "
-        f"{mem_s} | {epoch_s} | {avg_epoch_s} | {total_train_s} | {epochs_s} | "
-        f"{r['train_batches_per_epoch']} | "
+        f"{mem_s} | {epoch_s} | {r['train_batches_per_epoch']} | "
         f"{r['train_batch_size']}×{r['gradient_accumulation_step']} | {r['max_seq_length']} |"
     )
 
 
 def _print_table(rows: list[dict[str, Any]]) -> str:
-    header = (
-        "| case | params | trainable | FLOPs (1 fwd, est.) | peak GPU GiB | "
-        "one_epoch_train_sec | avg_epoch_sec | train_total_sec | epochs_completed | "
-        "batches/epoch | B×accum | seq |"
-    )
-    sep = "|---|---:|---:|---|---:|---:|---:|---:|---:|---:|---|---:|"
-    lines = [header, sep] + [_md_row(r) for r in rows]
+    full_mode = any(bool(r.get("full_training_time")) for r in rows)
+    if full_mode:
+        header = (
+            "| case | params | trainable | avg_epoch_FLOPs_est | peak_GPU_GiB | "
+            "avg_epoch_sec | train_total_sec | epochs_completed | "
+            "batches/epoch | B×accum | seq |"
+        )
+        sep = "|---|---:|---:|---|---:|---:|---:|---:|---:|---|---:|"
+    else:
+        header = (
+            "| case | params | trainable | FLOPs (1 fwd, est.) | peak_GPU_GiB | "
+            "one_epoch_train_sec | batches/epoch | B×accum | seq |"
+        )
+        sep = "|---|---:|---:|---|---:|---:|---:|---|---:|"
+    lines = [header, sep] + [_md_row(r, full_mode=full_mode) for r in rows]
     text = "\n".join(lines) + "\n"
     print(text)
     return text
@@ -625,6 +882,12 @@ def main() -> int:
         ),
     )
     ap.add_argument(
+        "--full-training-max-epochs",
+        type=int,
+        default=None,
+        help=argparse.SUPPRESS,
+    )
+    ap.add_argument(
         "--cases",
         default="mosi,mosei,simsv2",
         help="Comma-separated subset of mosi,mosei,simsv2 (driver only).",
@@ -647,6 +910,7 @@ def main() -> int:
             memory_full_accum=args.memory_full_accum,
             skip_epoch_time=args.skip_epoch_time,
             full_training_time=args.full_training_time,
+            full_training_max_epochs=args.full_training_max_epochs,
         )
         print(json.dumps(result), flush=True)
         return 0
@@ -665,6 +929,7 @@ def main() -> int:
                 memory_full_accum=args.memory_full_accum,
                 skip_epoch_time=args.skip_epoch_time,
                 full_training_time=args.full_training_time,
+                full_training_max_epochs=args.full_training_max_epochs,
             ),
         )
 

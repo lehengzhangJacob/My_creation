@@ -1,0 +1,1037 @@
+{
+  "cases": [
+    {
+      "avg_complete_epoch_sec": 14.677297297297295,
+      "avg_epoch_forward_flops": 11967080796113.324,
+      "batches_per_epoch": {
+        "dev": 2,
+        "test": 6,
+        "train": 81
+      },
+      "case": "mosi",
+      "dataset": "mosi",
+      "environment": {
+        "cuda": "13.0",
+        "cuda_available": true,
+        "cuda_visible_devices": "1",
+        "gpu": "NVIDIA GeForce RTX 4090 D",
+        "platform": "Linux-5.15.0-78-generic-x86_64-with-glibc2.35",
+        "python": "3.10.20",
+        "torch": "2.9.1"
+      },
+      "epoch_secs": [
+        12.04,
+        11.92,
+        11.98,
+        11.96,
+        12.32,
+        15.1,
+        17.67,
+        17.67,
+        17.59,
+        17.9,
+        18.31,
+        18.49,
+        18.02,
+        17.78,
+        17.91,
+        17.57,
+        17.74,
+        15.58,
+        18.1,
+        17.94,
+        17.57,
+        17.71,
+        12.19,
+        12.14,
+        12.33,
+        12.37,
+        12.38,
+        12.31,
+        12.25,
+        12.18,
+        12.2,
+        12.19,
+        12.21,
+        12.36,
+        12.34,
+        12.4,
+        12.34
+      ],
+      "epochs_completed": 37,
+      "flops_backend": "fvcore+audit_handles",
+      "flops_protocol": "forward_only_sum_all_train_dev_test_forwards_by_exact_batch_signature",
+      "forward_call_count_ok": true,
+      "forward_calls_expected": 3293,
+      "forward_calls_total": 3293,
+      "forward_flops_total": 442781989456193.0,
+      "gradient_accumulation_step": 2,
+      "max_seq_length": 50,
+      "n_epochs_config": 99,
+      "params_total": 191793425,
+      "params_trainable": 191793425,
+      "peak_memory_forward_only_gib": 2.5256381034851074,
+      "peak_memory_training_loop_gib": 8.958,
+      "signature_details": [
+        {
+          "acoustic": [
+            101,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 5,
+          "flops_per_forward": 528102069704.0,
+          "flops_total": 2640510348520.0,
+          "input_ids": [
+            101,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            101,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.4138073921203613,
+          "segment_ids": null,
+          "split": "dev",
+          "stage": 1,
+          "total_forward_calls": 5,
+          "unsupported_ops": {},
+          "visual": [
+            101,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            128,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 5,
+          "flops_per_forward": 667339790228.0,
+          "flops_total": 3336698951140.0,
+          "input_ids": [
+            128,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            128,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.5927629470825195,
+          "segment_ids": null,
+          "split": "dev",
+          "stage": 1,
+          "total_forward_calls": 5,
+          "unsupported_ops": {},
+          "visual": [
+            128,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            101,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 32,
+          "flops_per_forward": 528102133759.0,
+          "flops_total": 16899268280288.0,
+          "input_ids": [
+            101,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            101,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.4138073921203613,
+          "segment_ids": null,
+          "split": "dev",
+          "stage": 2,
+          "total_forward_calls": 32,
+          "unsupported_ops": {},
+          "visual": [
+            101,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            128,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 32,
+          "flops_per_forward": 667339871401.0,
+          "flops_total": 21354875884832.0,
+          "input_ids": [
+            128,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            128,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.5927629470825195,
+          "segment_ids": null,
+          "split": "dev",
+          "stage": 2,
+          "total_forward_calls": 32,
+          "unsupported_ops": {},
+          "visual": [
+            128,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            128,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 5,
+          "epochs_for_stage": 5,
+          "flops_per_forward": 667339790228.0,
+          "flops_total": 16683494755700.0,
+          "input_ids": [
+            128,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            128,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.5927629470825195,
+          "segment_ids": null,
+          "split": "test",
+          "stage": 1,
+          "total_forward_calls": 25,
+          "unsupported_ops": {},
+          "visual": [
+            128,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            45,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 5,
+          "flops_per_forward": 239312723432.0,
+          "flops_total": 1196563617160.0,
+          "input_ids": [
+            45,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            45,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.040571689605713,
+          "segment_ids": null,
+          "split": "test",
+          "stage": 1,
+          "total_forward_calls": 5,
+          "unsupported_ops": {},
+          "visual": [
+            45,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            128,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 5,
+          "epochs_for_stage": 32,
+          "flops_per_forward": 667339871401.0,
+          "flops_total": 106774379424160.0,
+          "input_ids": [
+            128,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            128,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.5927629470825195,
+          "segment_ids": null,
+          "split": "test",
+          "stage": 2,
+          "total_forward_calls": 160,
+          "unsupported_ops": {},
+          "visual": [
+            128,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            45,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 32,
+          "flops_per_forward": 239312751983.0,
+          "flops_total": 7658008063456.0,
+          "input_ids": [
+            45,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            45,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.040571689605713,
+          "segment_ids": null,
+          "split": "test",
+          "stage": 2,
+          "total_forward_calls": 32,
+          "unsupported_ops": {},
+          "visual": [
+            45,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            1,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 5,
+          "flops_per_forward": 12413048741.0,
+          "flops_total": 62065243705.0,
+          "input_ids": [
+            1,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            1,
+            1,
+            1
+          ],
+          "mode": "train",
+          "peak_memory_forward_only_gib": 0.8778252601623535,
+          "segment_ids": null,
+          "split": "train",
+          "stage": 1,
+          "total_forward_calls": 5,
+          "unsupported_ops": {},
+          "visual": [
+            1,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            16,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 80,
+          "epochs_for_stage": 5,
+          "flops_per_forward": 89790162596.0,
+          "flops_total": 35916065038400.0,
+          "input_ids": [
+            16,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            16,
+            1,
+            1
+          ],
+          "mode": "train",
+          "peak_memory_forward_only_gib": 2.525632381439209,
+          "segment_ids": null,
+          "split": "train",
+          "stage": 1,
+          "total_forward_calls": 400,
+          "unsupported_ops": {},
+          "visual": [
+            16,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            1,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 32,
+          "flops_per_forward": 12413049396.0,
+          "flops_total": 397217580672.0,
+          "input_ids": [
+            1,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            1,
+            1,
+            1
+          ],
+          "mode": "train",
+          "peak_memory_forward_only_gib": 0.877830982208252,
+          "segment_ids": null,
+          "split": "train",
+          "stage": 2,
+          "total_forward_calls": 32,
+          "unsupported_ops": {},
+          "visual": [
+            1,
+            50,
+            47
+          ]
+        },
+        {
+          "acoustic": [
+            16,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 80,
+          "epochs_for_stage": 32,
+          "flops_per_forward": 89790172761.0,
+          "flops_total": 229862842268160.0,
+          "input_ids": [
+            16,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            16,
+            1,
+            1
+          ],
+          "mode": "train",
+          "peak_memory_forward_only_gib": 2.5256381034851074,
+          "segment_ids": null,
+          "split": "train",
+          "stage": 2,
+          "total_forward_calls": 2560,
+          "unsupported_ops": {},
+          "visual": [
+            16,
+            50,
+            47
+          ]
+        }
+      ],
+      "split_totals": {
+        "dev": {
+          "avg_epoch_forward_flops": 1195441985534.5945,
+          "forward_calls_total": 74,
+          "forward_flops_total": 44231353464780.0
+        },
+        "test": {
+          "avg_epoch_forward_flops": 3576012050283.1353,
+          "forward_calls_total": 222,
+          "forward_flops_total": 132312445860476.0
+        },
+        "train": {
+          "avg_epoch_forward_flops": 7195626760295.595,
+          "forward_calls_total": 2997,
+          "forward_flops_total": 266238190130937.0
+        }
+      },
+      "stage1_epochs": 5,
+      "stage_epoch_counts": {
+        "1": 5,
+        "2": 32
+      },
+      "time_source": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/Model_Complexity_Analysis/nohup_fulltrain_serial_20260525_gpu0_1105.outer.log",
+      "train_batch_size": 16,
+      "training_memory_source": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/Model_Complexity_Analysis/results_mosi_fulltrain_paper_20260525_gpu0_1105.md",
+      "unsupported_ops_after_audit_handles": {}
+    },
+    {
+      "avg_complete_epoch_sec": 518.7246,
+      "avg_epoch_forward_flops": 140512433010477.2,
+      "batches_per_epoch": {
+        "dev": 15,
+        "test": 37,
+        "train": 4067
+      },
+      "case": "mosei",
+      "dataset": "mosei",
+      "environment": {
+        "cuda": "13.0",
+        "cuda_available": true,
+        "cuda_visible_devices": "1",
+        "gpu": "NVIDIA GeForce RTX 4090 D",
+        "platform": "Linux-5.15.0-78-generic-x86_64-with-glibc2.35",
+        "python": "3.10.20",
+        "torch": "2.9.1"
+      },
+      "epoch_secs": [
+        518.65,
+        517.5,
+        517.83,
+        516.85,
+        517.5,
+        518.24,
+        506.62,
+        518.31,
+        520.33,
+        489.76,
+        491.04,
+        521.17,
+        500.1,
+        523.45,
+        513.21,
+        533.43,
+        527.73,
+        525.17,
+        526.53,
+        524.4,
+        526.54,
+        526.29,
+        526.26,
+        471.6,
+        525.68,
+        526.62,
+        527.2,
+        521.73,
+        519.74,
+        521.46,
+        520.4,
+        500.65,
+        520.25,
+        524.92,
+        526.69,
+        527.38,
+        525.72,
+        522.78,
+        520.12,
+        519.64,
+        519.9,
+        521.64,
+        520.03,
+        512.15,
+        526.13,
+        523.18,
+        525.38,
+        523.1,
+        524.74,
+        510.49
+      ],
+      "epochs_completed": 50,
+      "flops_backend": "fvcore+audit_handles",
+      "flops_protocol": "forward_only_sum_all_train_dev_test_forwards_by_exact_batch_signature",
+      "forward_call_count_ok": true,
+      "forward_calls_expected": 205950,
+      "forward_calls_total": 205950,
+      "forward_flops_total": 7025621650523860.0,
+      "gradient_accumulation_step": 8,
+      "max_seq_length": 50,
+      "n_epochs_config": 50,
+      "params_total": 185237940,
+      "params_trainable": 185237940,
+      "peak_memory_forward_only_gib": 1.564955711364746,
+      "peak_memory_training_loop_gib": 5.715,
+      "signature_details": [
+        {
+          "acoustic": [
+            128,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 14,
+          "epochs_for_stage": 10,
+          "flops_per_forward": 628836996116.0,
+          "flops_total": 88037179456240.0,
+          "input_ids": [
+            128,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            128,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.564955711364746,
+          "segment_ids": null,
+          "split": "dev",
+          "stage": 1,
+          "total_forward_calls": 140,
+          "unsupported_ops": {},
+          "visual": [
+            128,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            77,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 10,
+          "flops_per_forward": 381173369933.0,
+          "flops_total": 3811733699330.0,
+          "input_ids": [
+            77,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            77,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.2285799980163574,
+          "segment_ids": null,
+          "split": "dev",
+          "stage": 1,
+          "total_forward_calls": 10,
+          "unsupported_ops": {},
+          "visual": [
+            77,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            128,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 14,
+          "epochs_for_stage": 40,
+          "flops_per_forward": 628837028137.0,
+          "flops_total": 352148735756720.0,
+          "input_ids": [
+            128,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            128,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.564955711364746,
+          "segment_ids": null,
+          "split": "dev",
+          "stage": 2,
+          "total_forward_calls": 560,
+          "unsupported_ops": {},
+          "visual": [
+            128,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            77,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 40,
+          "flops_per_forward": 381173389204.0,
+          "flops_total": 15246935568160.0,
+          "input_ids": [
+            77,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            77,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.2285799980163574,
+          "segment_ids": null,
+          "split": "dev",
+          "stage": 2,
+          "total_forward_calls": 40,
+          "unsupported_ops": {},
+          "visual": [
+            77,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            128,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 36,
+          "epochs_for_stage": 10,
+          "flops_per_forward": 628836996116.0,
+          "flops_total": 226381318601760.0,
+          "input_ids": [
+            128,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            128,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.564955711364746,
+          "segment_ids": null,
+          "split": "test",
+          "stage": 1,
+          "total_forward_calls": 360,
+          "unsupported_ops": {},
+          "visual": [
+            128,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            35,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 10,
+          "flops_per_forward": 177215089547.0,
+          "flops_total": 1772150895470.0,
+          "input_ids": [
+            35,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            35,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 0.9471721649169922,
+          "segment_ids": null,
+          "split": "test",
+          "stage": 1,
+          "total_forward_calls": 10,
+          "unsupported_ops": {},
+          "visual": [
+            35,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            128,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 36,
+          "epochs_for_stage": 40,
+          "flops_per_forward": 628837028137.0,
+          "flops_total": 905525320517280.0,
+          "input_ids": [
+            128,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            128,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 1.564955711364746,
+          "segment_ids": null,
+          "split": "test",
+          "stage": 2,
+          "total_forward_calls": 1440,
+          "unsupported_ops": {},
+          "visual": [
+            128,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            35,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 40,
+          "flops_per_forward": 177215098318.0,
+          "flops_total": 7088603932720.0,
+          "input_ids": [
+            35,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            35,
+            1,
+            1
+          ],
+          "mode": "eval",
+          "peak_memory_forward_only_gib": 0.9471721649169922,
+          "segment_ids": null,
+          "split": "test",
+          "stage": 2,
+          "total_forward_calls": 40,
+          "unsupported_ops": {},
+          "visual": [
+            35,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            1,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 10,
+          "flops_per_forward": 12112111262.0,
+          "flops_total": 121121112620.0,
+          "input_ids": [
+            1,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            1,
+            1,
+            1
+          ],
+          "mode": "train",
+          "peak_memory_forward_only_gib": 0.840364933013916,
+          "segment_ids": null,
+          "split": "train",
+          "stage": 1,
+          "total_forward_calls": 10,
+          "unsupported_ops": {},
+          "visual": [
+            1,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            4,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 4066,
+          "epochs_for_stage": 10,
+          "flops_per_forward": 26684721596.0,
+          "flops_total": 1085000780093360.0,
+          "input_ids": [
+            4,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            4,
+            1,
+            1
+          ],
+          "mode": "train",
+          "peak_memory_forward_only_gib": 1.1427578926086426,
+          "segment_ids": null,
+          "split": "train",
+          "stage": 1,
+          "total_forward_calls": 40660,
+          "unsupported_ops": {},
+          "visual": [
+            4,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            1,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 1,
+          "epochs_for_stage": 40,
+          "flops_per_forward": 12112111533.0,
+          "flops_total": 484484461320.0,
+          "input_ids": [
+            1,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            1,
+            1,
+            1
+          ],
+          "mode": "train",
+          "peak_memory_forward_only_gib": 0.8403706550598145,
+          "segment_ids": null,
+          "split": "train",
+          "stage": 2,
+          "total_forward_calls": 40,
+          "unsupported_ops": {},
+          "visual": [
+            1,
+            50,
+            35
+          ]
+        },
+        {
+          "acoustic": [
+            4,
+            50,
+            74
+          ],
+          "backend": "fvcore+audit_handles",
+          "count_per_epoch": 4066,
+          "epochs_for_stage": 40,
+          "flops_per_forward": 26684722617.0,
+          "flops_total": 4340003286428880.0,
+          "input_ids": [
+            4,
+            50
+          ],
+          "input_mask": null,
+          "labels": [
+            4,
+            1,
+            1
+          ],
+          "mode": "train",
+          "peak_memory_forward_only_gib": 1.142763614654541,
+          "segment_ids": null,
+          "split": "train",
+          "stage": 2,
+          "total_forward_calls": 162640,
+          "unsupported_ops": {},
+          "visual": [
+            4,
+            50,
+            35
+          ]
+        }
+      ],
+      "split_totals": {
+        "dev": {
+          "avg_epoch_forward_flops": 9184891689609.0,
+          "forward_calls_total": 750,
+          "forward_flops_total": 459244584480450.0
+        },
+        "test": {
+          "avg_epoch_forward_flops": 22815347878944.6,
+          "forward_calls_total": 1850,
+          "forward_flops_total": 1140767393947230.0
+        },
+        "train": {
+          "avg_epoch_forward_flops": 108512193441923.6,
+          "forward_calls_total": 203350,
+          "forward_flops_total": 5425609672096180.0
+        }
+      },
+      "stage1_epochs": 10,
+      "stage_epoch_counts": {
+        "1": 10,
+        "2": 40
+      },
+      "time_source": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/Model_Complexity_Analysis/nohup_fulltrain_serial_20260525_gpu0_1105.outer.log",
+      "train_batch_size": 4,
+      "training_memory_source": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/Model_Complexity_Analysis/results_mosei_fulltrain_paper_20260525_gpu0_1105.md",
+      "unsupported_ops_after_audit_handles": {}
+    }
+  ],
+  "generated_at_local": "2026-05-26 00:49:50 +0800",
+  "generated_at_unix": 1779727790.7815545
+}

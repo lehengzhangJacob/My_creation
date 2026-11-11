@@ -7,6 +7,9 @@ MAX_SEQ_LEN = {
     "mustard": 77,
 }
 
+CONFIDENCE_MODE_CHOICES = ("token", "modality", "uniform")
+ROUTING_MODE_CHOICES = ("gumbel", "argmax", "soft", "batch_gumbel")
+
 
 def format_classify_float_argv(p: dict[str, float | int]) -> dict[str, str]:
     """Mirror ``optuna_search_classify`` train subprocess argv formatting."""
@@ -37,12 +40,26 @@ def build_classify_argv(
     checkpoint_dir: str,
     selection_metric: str = "binary_acc",
     ablation: str = "none",
+    seed: int | None = None,
+    disable_hcf: bool = False,
+    confidence_mode: str | None = None,
+    routing_mode: str | None = None,
 ) -> list[str]:
     """CLI tokens for ``ablation_study/train_classify.py`` (cwd = ``My_creation``)."""
     if dataset not in MAX_SEQ_LEN:
         raise ValueError(f"unsupported dataset {dataset!r}")
+    if confidence_mode is not None and confidence_mode not in CONFIDENCE_MODE_CHOICES:
+        raise ValueError(
+            f"unsupported confidence_mode {confidence_mode!r}; "
+            f"expected one of {CONFIDENCE_MODE_CHOICES}")
+    if routing_mode is not None and routing_mode not in ROUTING_MODE_CHOICES:
+        raise ValueError(
+            f"unsupported routing_mode {routing_mode!r}; "
+            f"expected one of {ROUTING_MODE_CHOICES}")
 
     p = dict(params)
+    if seed is not None:
+        p["seed"] = int(seed)
     fmt = format_classify_float_argv(p)
     ib_hidden_dim = int(p.get("ib_hidden_dim", p["unified_dim"]))
 
@@ -120,4 +137,10 @@ def build_classify_argv(
         argv.append("--freeze_backbone_stage2")
     if ablation != "none":
         argv.extend(["--ablation", ablation])
+    if disable_hcf:
+        argv.append("--disable_hcf")
+    if confidence_mode is not None:
+        argv.extend(["--confidence_mode", confidence_mode])
+    if routing_mode is not None:
+        argv.extend(["--routing_mode", routing_mode])
     return argv

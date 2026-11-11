@@ -25,9 +25,9 @@ def _resolve_dims(config, mc):
     text_dim = getattr(mc, 'text_dim', None) or global_configs.TEXT_DIM
     acoustic_dim = getattr(mc, 'acoustic_dim', None) or global_configs.ACOUSTIC_DIM
     visual_dim = getattr(mc, 'visual_dim', None) or global_configs.VISUAL_DIM
-    hcf_dim = getattr(mc, 'hcf_dim', None)
-    if hcf_dim is None:
-        hcf_dim = global_configs.HCF_DIM
+    configured_hcf_dim = getattr(mc, 'hcf_dim', None)
+    hcf_dim = (global_configs.HCF_DIM
+               if configured_hcf_dim is None else int(configured_hcf_dim))
 
     ds = getattr(mc, 'dataset', None)
     if ds and (text_dim <= 0 or acoustic_dim <= 0 or visual_dim <= 0):
@@ -35,9 +35,8 @@ def _resolve_dims(config, mc):
         text_dim = getattr(mc, 'text_dim', None) or global_configs.TEXT_DIM
         acoustic_dim = getattr(mc, 'acoustic_dim', None) or global_configs.ACOUSTIC_DIM
         visual_dim = getattr(mc, 'visual_dim', None) or global_configs.VISUAL_DIM
-        hcf_dim = getattr(mc, 'hcf_dim', None)
-        if hcf_dim is None:
-            hcf_dim = global_configs.HCF_DIM
+        hcf_dim = (global_configs.HCF_DIM
+                   if configured_hcf_dim is None else int(configured_hcf_dim))
 
     if text_dim <= 0:
         text_dim = config.hidden_size
@@ -80,6 +79,8 @@ class InfoGate_AlbertModel(AlbertPreTrainedModel):
             'gumbel_tau': getattr(multimodal_config, 'gumbel_tau_start', 1.0),
             'task_type': getattr(multimodal_config, 'task_type', 'binary'),
             'ablation': getattr(multimodal_config, 'ablation', 'none'),
+            'confidence_mode': getattr(multimodal_config, 'confidence_mode', 'token'),
+            'routing_mode': getattr(multimodal_config, 'routing_mode', 'gumbel'),
         }
 
         self.infogate = InfoGate(ig_args)

@@ -1,0 +1,208 @@
+{
+  "mosei": {
+    "error_quartiles": [
+      {
+        "lower_abs_error": 0.00031071528792381287,
+        "mean_abs_error": 0.07106957718101069,
+        "mean_route_entropy": 0.9060540144813257,
+        "mean_w_acoustic": 0.2314961326319196,
+        "mean_w_language": 0.5398193527972462,
+        "mean_w_max": 0.5398422302253076,
+        "mean_w_visual": 0.22868451782234747,
+        "n": 1161,
+        "quartile": 1,
+        "upper_abs_error": 0.1681579351425171
+      },
+      {
+        "lower_abs_error": 0.1681579351425171,
+        "mean_abs_error": 0.2753812996140713,
+        "mean_route_entropy": 0.8727217497716554,
+        "mean_w_acoustic": 0.21367048664280822,
+        "mean_w_language": 0.5646203433131349,
+        "mean_w_max": 0.5646374067869679,
+        "mean_w_visual": 0.22170917031106566,
+        "n": 1160,
+        "quartile": 2,
+        "upper_abs_error": 0.38160255551338196
+      },
+      {
+        "lower_abs_error": 0.38160255551338196,
+        "mean_abs_error": 0.5330985516508677,
+        "mean_route_entropy": 0.8667105493782703,
+        "mean_w_acoustic": 0.19937428746200658,
+        "mean_w_language": 0.5769725880881612,
+        "mean_w_max": 0.5770005232090585,
+        "mean_w_visual": 0.22365312379362037,
+        "n": 1161,
+        "quartile": 3,
+        "upper_abs_error": 0.7107715904712677
+      },
+      {
+        "lower_abs_error": 0.7107715904712677,
+        "mean_abs_error": 1.1177031651514677,
+        "mean_route_entropy": 0.8352426447235586,
+        "mean_w_acoustic": 0.19076495225378778,
+        "mean_w_language": 0.602536450830849,
+        "mean_w_max": 0.6025684833988663,
+        "mean_w_visual": 0.20669859696294213,
+        "n": 1161,
+        "quartile": 4,
+        "upper_abs_error": 4.584432363510132
+      }
+    ],
+    "hard_primary": {
+      "acoustic": {
+        "count": 9,
+        "percentage": 0.19384018953262977
+      },
+      "language": {
+        "count": 4634,
+        "percentage": 99.80615981046736
+      },
+      "visual": {
+        "count": 0,
+        "percentage": 0.0
+      }
+    },
+    "mean_abs_error": 0.4993613783904776,
+    "n": 4643,
+    "non_language": {
+      "count": 9,
+      "percentage": 0.19384018953262977,
+      "split_indices": [
+        750,
+        818,
+        1473,
+        2343,
+        2344,
+        2856,
+        3796,
+        4499,
+        4501
+      ]
+    },
+    "route_entropy": {
+      "mean": 0.8701816926341078,
+      "std": 0.31514786098531294
+    },
+    "soft_weights": {
+      "acoustic": {
+        "mean": 0.20882542145193914,
+        "std": 0.12053140070765976
+      },
+      "language": {
+        "mean": 0.570988555034635,
+        "std": 0.19390618499180026
+      },
+      "visual": {
+        "mean": 0.22018602424099734,
+        "std": 0.10643925428277101
+      }
+    },
+    "source": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/Qualitative_Evaluation/results/mosei_trial70_dpr_test.csv",
+    "w_max": {
+      "mean": 0.5710135338867683,
+      "std": 0.1938922773635019
+    }
+  },
+  "simsv2": {
+    "error_quartiles": [
+      {
+        "lower_abs_error": 0.0001138150691986084,
+        "mean_abs_error": 0.04183310109215814,
+        "mean_route_entropy": 1.0403158715332796,
+        "mean_w_acoustic": 0.24415356641397973,
+        "mean_w_language": 0.4732590194604572,
+        "mean_w_max": 0.47328989063911,
+        "mean_w_visual": 0.2825874128166773,
+        "n": 259,
+        "quartile": 1,
+        "upper_abs_error": 0.08773143589496613
+      },
+      {
+        "lower_abs_error": 0.08773143589496613,
+        "mean_abs_error": 0.140340161329323,
+        "mean_route_entropy": 1.0388352563676908,
+        "mean_w_acoustic": 0.23671209910350252,
+        "mean_w_language": 0.4712888359330421,
+        "mean_w_max": 0.47130702794060225,
+        "mean_w_visual": 0.29199906201787695,
+        "n": 258,
+        "quartile": 2,
+        "upper_abs_error": 0.1982237920165062
+      },
+      {
+        "lower_abs_error": 0.1982237920165062,
+        "mean_abs_error": 0.27672017137556115,
+        "mean_route_entropy": 1.0483570549377175,
+        "mean_w_acoustic": 0.2524283567024756,
+        "mean_w_language": 0.4647968345603278,
+        "mean_w_max": 0.4647968345603278,
+        "mean_w_visual": 0.2827748091992482,
+        "n": 258,
+        "quartile": 3,
+        "upper_abs_error": 0.3664757311344147
+      },
+      {
+        "lower_abs_error": 0.3664757311344147,
+        "mean_abs_error": 0.703277588271784,
+        "mean_route_entropy": 1.0516007204313536,
+        "mean_w_acoustic": 0.26373538366270805,
+        "mean_w_language": 0.4644424502223615,
+        "mean_w_max": 0.4644424502223615,
+        "mean_w_visual": 0.2718221662012306,
+        "n": 259,
+        "quartile": 4,
+        "upper_abs_error": 1.693335235118866
+      }
+    ],
+    "hard_primary": {
+      "acoustic": {
+        "count": 0,
+        "percentage": 0.0
+      },
+      "language": {
+        "count": 1031,
+        "percentage": 99.70986460348162
+      },
+      "visual": {
+        "count": 3,
+        "percentage": 0.2901353965183752
+      }
+    },
+    "mean_abs_error": 0.2907013872177187,
+    "n": 1034,
+    "non_language": {
+      "count": 3,
+      "percentage": 0.2901353965183752,
+      "split_indices": [
+        584,
+        673,
+        703
+      ]
+    },
+    "route_entropy": {
+      "mean": 1.0447795102859143,
+      "std": 0.040895570103703614
+    },
+    "soft_weights": {
+      "acoustic": {
+        "mean": 0.2492664174736987,
+        "std": 0.047800746386137516
+      },
+      "language": {
+        "mean": 0.468447566378278,
+        "std": 0.04617575406447656
+      },
+      "visual": {
+        "mean": 0.2822860152221049,
+        "std": 0.059714545395050556
+      }
+    },
+    "source": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/Qualitative_Evaluation/results/simsv2_trial53_dpr_test.csv",
+    "w_max": {
+      "mean": 0.46845983830595844,
+      "std": 0.04616585007141762
+    }
+  }
+}

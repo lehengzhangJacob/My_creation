@@ -1,0 +1,3 @@
+case,params_total,params_trainable,avg_epoch_forward_flops,forward_flops_total,peak_memory_forward_only_gib,peak_memory_training_loop_gib,avg_complete_epoch_sec,epochs_completed,forward_calls_total,forward_calls_expected,forward_call_count_ok,train_batch_size,gradient_accumulation_step,max_seq_length
+mosi,191793425,191793425,11967080796113.324,442781989456193.0,2.5256381034851074,8.958,14.677297297297295,37,3293,3293,True,16,2,50
+mosei,185237940,185237940,140512433010477.2,7025621650523860.0,1.564955711364746,5.715,518.7246,50,205950,205950,True,4,8,50

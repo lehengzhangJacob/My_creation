@@ -65,9 +65,22 @@ def format_train_float_argv(p: dict[str, float | int]) -> dict[str, str]:
     }
 
 
-def build_train_argv(*, checkpoint_dir: str, ablation: str = "none") -> list[str]:
+def build_train_argv(
+    *,
+    checkpoint_dir: str,
+    ablation: str = "none",
+    seed: int | None = None,
+    model: str | None = None,
+    text_backbone: str | None = None,
+    model_variant: str | None = None,
+    confidence_mode: str | None = None,
+    routing_mode: str | None = None,
+    disable_l_rib: bool = False,
+) -> list[str]:
     """CLI tokens for ``ablation_study/train.py`` (flag/value pairs)."""
     p = dict(TRIAL_39_PARAMS)
+    if seed is not None:
+        p["seed"] = int(seed)
     fmt = format_train_float_argv(p)
     argv = [
         "--dataset",
@@ -129,4 +142,15 @@ def build_train_argv(*, checkpoint_dir: str, ablation: str = "none") -> list[str
     ]
     if ablation != "none":
         argv.extend(["--ablation", ablation])
+    for flag, value in (
+        ("--model", model),
+        ("--text_backbone", text_backbone),
+        ("--model_variant", model_variant),
+        ("--confidence_mode", confidence_mode),
+        ("--routing_mode", routing_mode),
+    ):
+        if value is not None:
+            argv.extend([flag, str(value)])
+    if disable_l_rib:
+        argv.append("--disable_l_rib")
     return argv

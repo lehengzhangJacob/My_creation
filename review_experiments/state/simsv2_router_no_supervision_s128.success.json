@@ -1,0 +1,27 @@
+{
+  "checkpoint": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_no_supervision_s128/checkpoints/infogate_simsv2_best.pt",
+  "command": [
+    "/root/autodl-tmp/anaconda3/envs/ITHP5090/bin/python",
+    "-u",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/ablation_study/train_fixed_simsv2_tier3_fresh_trial53.py",
+    "--seed",
+    "128",
+    "--disable-l-rib",
+    "--checkpoint-dir",
+    "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_no_supervision_s128/checkpoints"
+  ],
+  "cuda_visible_devices": "0",
+  "cwd": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation",
+  "elapsed_seconds": 1716.6083143036813,
+  "ended_at": "2026-07-14T10:00:26.250193+00:00",
+  "experiment_id": "simsv2_router_no_supervision_s128",
+  "log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/simsv2_router_no_supervision_s128.log",
+  "manifest_entry_sha256": "000eabc9b334fb2889353cceacdb4eaee51a34ae784f6b2be2f69f8bd2fca3eb",
+  "pid": 330433,
+  "predictions": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/runs/simsv2_router_no_supervision_s128/checkpoints/best_test_predictions.csv",
+  "return_code": 0,
+  "schema_version": 1,
+  "started_at": "2026-07-14T09:31:49.641883+00:00",
+  "status": "success",
+  "temporary_log": "/root/autodl-tmp/ITHP_MODS_CyIN_Ect/My_creation/review_experiments/logs/.simsv2_router_no_supervision_s128.log.110648.running"
+}

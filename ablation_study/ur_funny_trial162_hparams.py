@@ -54,11 +54,23 @@ PAPER_TEST_METRICS = {
 }
 
 
-def build_train_argv(*, checkpoint_dir: str, ablation: str = "none") -> list[str]:
+def build_train_argv(
+    *,
+    checkpoint_dir: str,
+    ablation: str = "none",
+    seed: int | None = None,
+    disable_hcf: bool = False,
+    confidence_mode: str | None = None,
+    routing_mode: str | None = None,
+) -> list[str]:
     return build_classify_argv(
         dataset="ur_funny",
         params=TRIAL_162_PARAMS,
         checkpoint_dir=checkpoint_dir,
         selection_metric=SELECTION_METRIC,
         ablation=ablation,
+        seed=seed,
+        disable_hcf=disable_hcf,
+        confidence_mode=confidence_mode,
+        routing_mode=routing_mode,
     )

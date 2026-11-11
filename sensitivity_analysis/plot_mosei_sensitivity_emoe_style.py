@@ -138,14 +138,15 @@ def plot(
     strict: bool,
 ) -> None:
     rows = load_rows(summary_csv)
-    plt.rcParams.update({"font.size": 11})
+    plt.rcParams.update({"font.size": 13})
     fig, axs = plt.subplots(
         1,
         len(axes_order),
         figsize=(4.65 * len(axes_order), 4.95),
         constrained_layout=True,
     )
-    fig.set_constrained_layout_pads(w_pad=0.06, h_pad=0.55, wspace=0.22, hspace=0.0)
+    fig.set_constrained_layout_pads(w_pad=0.06, h_pad=0.55, wspace=0.05, hspace=0.0)
+
 
     if len(axes_order) == 1:
         axs = [axs]
@@ -160,7 +161,7 @@ def plot(
                 sys.exit(1)
             ax.text(0.5, 0.5, "no data", ha="center", va="center", transform=ax.transAxes)
             ax.set_xlabel(
-                AXIS_XLABEL.get(axis, axis), fontsize=13, labelpad=10,
+                AXIS_XLABEL.get(axis, axis), fontsize=15, labelpad=10,
             )
             continue
 
@@ -182,8 +183,8 @@ def plot(
             markersize=7,
             label=r"$ACC_7$",
         )
-        ax.set_ylabel(r"$ACC_7$", color=color_acc, fontsize=12)
-        ax.tick_params(axis="y", labelsize=11, labelcolor=color_acc)
+        ax.set_ylabel(r"$ACC_7$", color=color_acc, fontsize=14)
+        ax.tick_params(axis="y", labelsize=13, labelcolor=color_acc)
         if acc7_ylim is not None:
             ax.set_ylim(acc7_ylim[0], acc7_ylim[1])
             span_a = acc7_ylim[1] - acc7_ylim[0]
@@ -200,7 +201,7 @@ def plot(
             ax.xaxis.set_major_locator(LogLocator(base=10))
             ax.xaxis.set_major_formatter(LogFormatterMathtext())
             ax.xaxis.set_minor_formatter(NullFormatter())
-        ax.tick_params(axis="x", labelsize=11, pad=2)
+        ax.tick_params(axis="x", labelsize=13, pad=2)
 
         ax2 = ax.twinx()
         (line_mae,) = ax2.plot(
@@ -213,8 +214,8 @@ def plot(
             markersize=6,
             label="MAE",
         )
-        ax2.set_ylabel("MAE", color=color_mae, fontsize=12)
-        ax2.tick_params(axis="y", labelsize=11, labelcolor=color_mae)
+        ax2.set_ylabel("MAE", color=color_mae, fontsize=14)
+        ax2.tick_params(axis="y", labelsize=13, labelcolor=color_mae)
         m_hi, m_lo = _mae_ylim(maes, mae_ylim)
         ax2.set_ylim(m_hi, m_lo)
         if mae_ylim is not None:
@@ -226,13 +227,13 @@ def plot(
 
         ax.grid(True, axis="y", alpha=0.35)
         ax.set_xlabel(
-            AXIS_XLABEL.get(axis, axis), fontsize=13, labelpad=11,
+            AXIS_XLABEL.get(axis, axis), fontsize=15, labelpad=11,
         )
 
         h1, l1 = ax.get_legend_handles_labels()
         h2, l2 = ax2.get_legend_handles_labels()
         ax.legend(
-            h1 + h2, l1 + l2, loc="upper right", fontsize=10, framealpha=0.9,
+            h1 + h2, l1 + l2, loc="upper right", fontsize=12, framealpha=0.9,
         )
 
     if not any_data:

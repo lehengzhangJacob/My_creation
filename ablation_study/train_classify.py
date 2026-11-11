@@ -5,6 +5,7 @@ and local ``infogate_modules``. Data loaders load from parent ``My_creation/``.
 """
 
 import argparse
+import csv
 import os
 import sys
 import random
@@ -75,6 +76,17 @@ parser.add_argument("--selector_balance_weight", type=float, default=0.0,
                     help="Batch-level routing entropy regularization weight.")
 parser.add_argument("--selector_rib_weight", type=float, default=0.05,
                     help="Overall weight of the routing supervision loss.")
+parser.add_argument(
+    "--disable_hcf", "--disable-hcf", action="store_true",
+    help="Disable the 4-D handcrafted feature modality.")
+parser.add_argument(
+    "--confidence_mode", "--confidence-mode", type=str, default="token",
+    choices=("token", "modality", "uniform"),
+    help="Confidence granularity used by InfoGate.")
+parser.add_argument(
+    "--routing_mode", "--routing-mode", type=str, default="gumbel",
+    choices=("gumbel", "argmax", "soft", "batch_gumbel"),
+    help="Primary-modality routing strategy.")
 parser.add_argument("--disable_l_lib", action="store_true",
                     help="Ablate the label-level IB loss.")
 parser.add_argument("--disable_l_rib", action="store_true",
@@ -156,7 +168,11 @@ global_configs.set_dataset_config(args.dataset)
 ACOUSTIC_DIM = global_configs.ACOUSTIC_DIM
 VISUAL_DIM = global_configs.VISUAL_DIM
 TEXT_DIM = global_configs.TEXT_DIM
-HCF_DIM = global_configs.HCF_DIM
+effective_hcf_dim = 0 if args.disable_hcf else 4
+# ``multimodal_config`` is the parsed args namespace, so expose the effective
+# dimension explicitly. In particular, keep 0 rather than falling back to the
+# dataset-level HCF dimension in the ALBERT wrapper.
+args.hcf_dim = effective_hcf_dim
 
 
 # ============================================================
@@ -176,7 +192,7 @@ def setup_data():
         test_batch_size=args.test_batch_size,
         gradient_accumulation_step=args.gradient_accumulation_step,
         n_epochs=args.n_epochs,
-        hcf_dim=HCF_DIM,
+        hcf_dim=effective_hcf_dim,
         slice_hkt=True,
     )
 
@@ -385,7 +401,7 @@ def train_epoch(model, loader, optimizer, scheduler, stage, ib_mult,
     total_loss, steps = 0.0, 0
     sum_task, sum_ib = 0.0, 0.0
     sum_detail = {}
-    use_hcf = HCF_DIM > 0
+    use_hcf = effective_hcf_dim > 0
     use_rdrop = getattr(args, "rdrop_alpha", 0.0) and args.rdrop_alpha > 0
 
     train_pbar = tqdm(loader, desc=f"Train (stage {stage})")
@@ -452,7 +468,7 @@ def train_epoch(model, loader, optimizer, scheduler, stage, ib_mult,
 def test_epoch(model, loader, stage=2, desc="Test"):
     model.eval()
     preds, labels = [], []
-    use_hcf = HCF_DIM > 0
+    use_hcf = effective_hcf_dim > 0
     with torch.no_grad():
         for batch in tqdm(loader, desc=desc):
             batch = tuple(t.to(DEVICE) for t in batch)
@@ -500,6 +516,26 @@ def selection_kwargs(m):
                 acc7=m.get("acc7", 0.0))
 
 
+def save_test_predictions_csv(preds, labels, output_path):
+    """Write the test outputs associated with the best dev checkpoint."""
+    logits = np.asarray(preds).reshape(-1)
+    ytrue = np.asarray(labels).reshape(-1)
+    if logits.shape != ytrue.shape:
+        raise ValueError(
+            f"test pred/label shape mismatch: {logits.shape} vs {ytrue.shape}")
+
+    probabilities = 1.0 / (1.0 + np.exp(-logits))
+    predictions = (probabilities >= 0.5).astype(int)
+    with open(output_path, "w", encoding="utf-8", newline="") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(
+            ["sample_index", "true_label", "logit", "probability", "prediction"])
+        for i, (label, logit, probability, prediction) in enumerate(
+                zip(ytrue, logits, probabilities, predictions)):
+            writer.writerow([
+                i, int(label), float(logit), float(probability), int(prediction)])
+
+
 # ============================================================
 # Main
 # ============================================================
@@ -521,6 +557,10 @@ def main():
     print(f"  alpha_ib       : {args.alpha_ib}")
     print(f"  selector_temp  : {args.selector_target_temp}")
     print(f"  selector_bal_w : {args.selector_balance_weight}")
+    print(f"  HCF modality   : {toggle_state(effective_hcf_dim > 0)}"
+          f" (dim={effective_hcf_dim})")
+    print(f"  Confidence mode: {args.confidence_mode}")
+    print(f"  Routing mode   : {args.routing_mode}")
     print(f"  IB mult end    : {args.ib_loss_mult_end} (stage2 linear decay)")
     print(f"  Freeze BB stg2 : {args.freeze_backbone_stage2}")
     print(f"  BCE pos weight : {args.bce_pos_weight_mode}"
@@ -552,6 +592,8 @@ def main():
 
     os.makedirs(args.checkpoint_dir, exist_ok=True)
     ckpt_path = os.path.join(args.checkpoint_dir, f"infogate_{args.dataset}_best.pt")
+    predictions_csv_path = os.path.join(
+        args.checkpoint_dir, "best_test_predictions.csv")
     select_start = args.stage1_epochs
     select_higher_is_better = selection_higher_is_better(args.selection_metric)
     best_selection_score = float('-inf') if select_higher_is_better else float('inf')
@@ -689,6 +731,8 @@ def main():
                 best_selection_score = compare_score
                 best_selection_tiebreak = selection_tiebreak
                 best_results = test_m
+                best_test_preds = np.asarray(preds).reshape(-1).copy()
+                best_test_labels = np.asarray(labels).reshape(-1).copy()
                 save_dict = {
                     'epoch': epoch + 1,
                     'model_state_dict': model.state_dict(),
@@ -704,15 +748,20 @@ def main():
                         'use_l_rib': args.use_l_rib,
                     },
                     'test_results': best_results,
+                    'test_preds': best_test_preds,
+                    'test_labels': best_test_labels,
                     'args': args,
                 }
                 if eval_with_ema:
                     save_dict['ema_state_dict'] = ema.state_dict()
                 torch.save(save_dict, ckpt_path)
+                save_test_predictions_csv(
+                    best_test_preds, best_test_labels, predictions_csv_path)
                 print(f"  >> Best model saved ({args.selection_metric}="
                       f"{selection_score:.6f}, compare={compare_score:.6f}, "
                       f"Acc={dev_m['acc2']*100:.2f}%, F1={dev_m['f1']*100:.2f}%) "
                       f"to {ckpt_path}")
+                print(f"  >> Best-test predictions saved to {predictions_csv_path}")
 
         if test_m["acc2"] > best_test_acc:
             best_test_acc = test_m["acc2"]
