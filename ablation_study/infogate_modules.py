@@ -392,7 +392,7 @@ class MSelector(nn.Module):
         super().__init__()
         assert num_modalities in (3, 4), \
             f"MSelector: num_modalities must be 3 or 4, got {num_modalities}"
-        allowed_routing_modes = {'gumbel', 'argmax', 'soft', 'batch_gumbel'}
+        allowed_routing_modes = {'gumbel', 'argmax', 'soft', 'batch_gumbel', 'topk'}
         if routing_mode not in allowed_routing_modes:
             raise ValueError(
                 f"Unknown routing_mode={routing_mode!r}; "
@@ -460,6 +460,13 @@ class MSelector(nn.Module):
             if self.routing_mode == 'soft':
                 # The primary is a differentiable mixture rather than a hard route.
                 primary_onehot = weights
+            elif self.routing_mode == 'topk':
+                # Detached uniform mask over the top-2 scores. No Gumbel noise.
+                k = min(2, self.num_modalities)
+                index = torch.topk(weights, k=k, dim=-1).indices
+                primary_onehot = torch.zeros_like(weights)
+                primary_onehot.scatter_(-1, index, 1.0 / k)
+                primary_onehot = primary_onehot.detach()
             else:  # argmax
                 # one_hot(argmax(.)) is detached from logits, so the task loss
                 # cannot train the hard primary decision. ``weights`` remains
@@ -468,7 +475,10 @@ class MSelector(nn.Module):
                     torch.argmax(weights, dim=-1),
                     num_classes=self.num_modalities).float()
 
-        primary_idx = torch.argmax(primary_onehot, dim=-1)
+        if self.routing_mode == 'topk':
+            primary_idx = torch.argmax(weights, dim=-1)
+        else:
+            primary_idx = torch.argmax(primary_onehot, dim=-1)
         return weights, primary_onehot, primary_idx
 
     def forward(self, H_a, H_l, H_v, mask=None):
@@ -552,7 +562,7 @@ class InfoGate(nn.Module):
         self.confidence_mode = args.get('confidence_mode', 'token')
         self.routing_mode = args.get('routing_mode', 'gumbel')
         allowed_confidence_modes = {'token', 'modality', 'uniform'}
-        allowed_routing_modes = {'gumbel', 'argmax', 'soft', 'batch_gumbel'}
+        allowed_routing_modes = {'gumbel', 'argmax', 'soft', 'batch_gumbel', 'topk'}
         if self.confidence_mode not in allowed_confidence_modes:
             raise ValueError(
                 f"Unknown confidence_mode={self.confidence_mode!r}; "

@@ -274,6 +274,31 @@ def save_heatmap_figures(
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    from matplotlib import font_manager as fm
+    from pathlib import Path
+
+    _tnr_dir = Path(__file__).resolve().parents[1] / "loss_curve_analysis" / "fonts"
+    for _name in (
+        "Times.TTF",
+        "Timesbd.TTF",
+        "Timesi.TTF",
+        "Timesbi.TTF",
+        "TimesNewRoman.ttf",
+        "TimesNewRoman-Bold.ttf",
+        "TimesNewRoman-Italic.ttf",
+        "TimesNewRoman-BoldItalic.ttf",
+    ):
+        _path = _tnr_dir / _name
+        if _path.is_file():
+            fm.fontManager.addfont(str(_path))
+    plt.rcParams.update(
+        {
+            "font.family": "Times New Roman",
+            "font.serif": ["Times New Roman"],
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
+    )
 
     n_tok = len(rows)
     n_ch = len(plot_cols)

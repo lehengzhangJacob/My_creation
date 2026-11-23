@@ -32,6 +32,26 @@ TRIALS: dict[str, dict] = {
                  "MAE": 0.2904, "Corr": 0.7107},
         "runtime": "~54 min",
     },
+    "ur_funny_trial197": {
+        "row": "UR-FUNNY v2",
+        "source": "sota_search/runs/ur_funny/trial_197",
+        "script": "ablation_study/train_classify.py",
+        "argv": (
+            "--dataset ur_funny --max_seq_length 64 --n_epochs 41 --stage1_epochs 9 "
+            "--train_batch_size 16 --gradient_accumulation_step 4 --learning_rate 5.553549e-06 "
+            "--ig_learning_rate 1.916258e-03 --beta_ib 17.2958 --alpha_ib 0.000961 "
+            "--bottleneck_dim 128 --num_infogate_layers 5 --unified_dim 384 --ib_hidden_dim 384 "
+            "--num_heads 4 --dropout_prob 0.2191 --warmup_proportion 0.1973 "
+            "--weight_decay 0.015704 --ema_decay 0.999 --ema_start_epoch 5 "
+            "--gumbel_tau_start 0.9519 --gumbel_tau_end 0.6117 --selector_target_temp 0.6290 "
+            "--selector_rib_weight 0.0526 --selection_metric binary_acc --checkpoint_dir {ckpt} "
+            "--seed 1312 --ib_loss_mult_end 1.000000 --bce_pos_weight_mode none "
+            "--focal_gamma 0.000000 --rdrop_alpha 0.000000 --early_stop_patience 0 "
+            "--selection_smooth_window 1 --selector_balance_weight 0.000000"
+        ),
+        "test": {"Acc": 75.15, "F1": 74.98},
+        "runtime": "~2.6 h",
+    },
     "mustard_trial1239": {
         "row": "MUStARD",
         "source": "sota_search/runs/mustard/trial_1239",

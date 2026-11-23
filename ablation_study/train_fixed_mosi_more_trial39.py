@@ -78,7 +78,7 @@ def main() -> int:
     )
     ap.add_argument(
         "--routing-mode",
-        choices=("gumbel", "argmax", "soft", "batch_gumbel"),
+        choices=("gumbel", "argmax", "soft", "batch_gumbel", "topk"),
         default=None,
         help="Override train.py --routing_mode.",
     )

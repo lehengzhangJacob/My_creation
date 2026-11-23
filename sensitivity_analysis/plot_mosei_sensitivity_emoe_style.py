@@ -63,7 +63,7 @@ AXIS_XLABEL = {
     "mse_weight": r"$\rho_{\mathrm{mse}}$",
     "alpha_ib": r"$\alpha_{\mathrm{IB}}$",
     "selector_target_temp": r"$\tau_{\mathrm{sel}}$",
-    "selector_rib_weight": r"$\gamma_{\mathrm{RIB}}$",
+    "selector_rib_weight": r"$\lambda_{\mathrm{rib}}$",
 }
 
 
@@ -138,7 +138,31 @@ def plot(
     strict: bool,
 ) -> None:
     rows = load_rows(summary_csv)
-    plt.rcParams.update({"font.size": 13})
+    from matplotlib import font_manager as fm
+
+    _tnr_dir = Path(__file__).resolve().parents[1] / "loss_curve_analysis" / "fonts"
+    for _name in (
+        "Times.TTF",
+        "Timesbd.TTF",
+        "Timesi.TTF",
+        "Timesbi.TTF",
+        "TimesNewRoman.ttf",
+        "TimesNewRoman-Bold.ttf",
+        "TimesNewRoman-Italic.ttf",
+        "TimesNewRoman-BoldItalic.ttf",
+    ):
+        _path = _tnr_dir / _name
+        if _path.is_file():
+            fm.fontManager.addfont(str(_path))
+    plt.rcParams.update(
+        {
+            "font.family": "Times New Roman",
+            "font.serif": ["Times New Roman"],
+            "font.size": 13,
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
+    )
     fig, axs = plt.subplots(
         1,
         len(axes_order),

@@ -167,7 +167,7 @@ ROWS: dict[str, Row] = {
         script="ablation_study/train.py",
         gold=dict(mosi39.TRIAL_39_PARAMS),
         # Strictly above the best baseline per metric in the paper's BERT panel.
-        metrics=_mosi_metrics(47.9, 86.4, 86.4, 0.722, 0.791),
+        metrics=_mosi_metrics(47.9, 85.2, 85.1, 0.722, 0.791),
         mem_mib=7000,
         build_argv=_regression_builder(mosi39, bert=True),
     ),
@@ -176,7 +176,7 @@ ROWS: dict[str, Row] = {
         script="ablation_study/train.py",
         gold=dict(mosei70.TRIAL_70_PARAMS),
         # Strictly above the best baseline per metric in the paper's BERT panel.
-        metrics=_mosi_metrics(54.0, 86.2, 86.3, 0.535, 0.770),
+        metrics=_mosi_metrics(54.0, 85.6, 85.6, 0.535, 0.769),
         mem_mib=3800,
         build_argv=_regression_builder(mosei70, bert=True),
         search_patience=10,
@@ -239,6 +239,10 @@ WIDEN: dict[str, dict[str, tuple[float, float]]] = {
     },
     "mosi_bert": {
         "gumbel_tau_end": (0.05, 0.1313928682567104),
+        "alpha_ib": (5e-4, 1e-2),
+        "dropout_prob": (0.15, 0.35),
+        "selector_rib_weight": (0.04, 0.0911),
+        "learning_rate": (1.0918416047286917e-05, 6e-5),
     },
     # Gold already sits outside the paper ranges here; widened further with user approval.
     "ur_funny": {

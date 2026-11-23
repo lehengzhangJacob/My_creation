@@ -7,7 +7,7 @@ token_ib,label_ib,routing}.pdf`` — the files copied into the manuscript
 ``graph/`` directory.
 
 Data: 10-iteration averaged step losses (``mosi_trial39_stepavg10_losses.csv``).
-Style: MOAC Fig. 7-like — serif, Iterations/Values, small legend, no stage line.
+Style: MOAC Fig. 7-like — Times New Roman, Iterations/Values, small legend, no stage line.
 """
 
 from __future__ import annotations
@@ -17,11 +17,25 @@ import csv
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib import font_manager as fm
 from matplotlib.ticker import MaxNLocator
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_CSV = HERE / "results" / "mosi_trial39_stepavg10_losses.csv"
 DEFAULT_OUT = HERE / "results" / "mosi_trial39_moac_standard"
+FONTS_DIR = HERE / "fonts"
+
+# Corefonts Times New Roman (preferred) + renamed Liberation fallbacks.
+_TNR_FILES = (
+    "Times.TTF",
+    "Timesbd.TTF",
+    "Timesi.TTF",
+    "Timesbi.TTF",
+    "TimesNewRoman.ttf",
+    "TimesNewRoman-Bold.ttf",
+    "TimesNewRoman-Italic.ttf",
+    "TimesNewRoman-BoldItalic.ttf",
+)
 
 # (csv_column, legend, subcaption, color, output_stem)
 SERIES = (
@@ -33,10 +47,23 @@ SERIES = (
 )
 
 
+def _register_times_new_roman() -> None:
+    for name in _TNR_FILES:
+        path = FONTS_DIR / name
+        if path.is_file():
+            fm.fontManager.addfont(str(path))
+
+
 def _apply_rc() -> None:
+    _register_times_new_roman()
     plt.rcParams.update(
         {
-            "font.family": "serif",
+            "font.family": "Times New Roman",
+            "font.serif": ["Times New Roman"],
+            "mathtext.fontset": "custom",
+            "mathtext.rm": "Times New Roman",
+            "mathtext.it": "Times New Roman:italic",
+            "mathtext.bf": "Times New Roman:bold",
             "font.size": 8,
             "axes.labelsize": 7.5,
             "xtick.labelsize": 6.5,

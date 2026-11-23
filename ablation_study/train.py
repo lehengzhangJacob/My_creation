@@ -111,7 +111,7 @@ parser.add_argument(
     "--routing_mode",
     type=str,
     default="gumbel",
-    choices=["gumbel", "argmax", "soft", "batch_gumbel"],
+    choices=["gumbel", "argmax", "soft", "batch_gumbel", "topk"],
     help="DPR routing strategy used by InfoGate.",
 )
 parser.add_argument("--disable_l_lib", action="store_true",

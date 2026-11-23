@@ -85,7 +85,7 @@ parser.add_argument(
     help="Confidence granularity used by InfoGate.")
 parser.add_argument(
     "--routing_mode", "--routing-mode", type=str, default="gumbel",
-    choices=("gumbel", "argmax", "soft", "batch_gumbel"),
+    choices=("gumbel", "argmax", "soft", "batch_gumbel", "topk"),
     help="Primary-modality routing strategy.")
 parser.add_argument("--disable_l_lib", action="store_true",
                     help="Ablate the label-level IB loss.")

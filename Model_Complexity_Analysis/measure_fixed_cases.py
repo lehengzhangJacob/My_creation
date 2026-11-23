@@ -61,21 +61,21 @@ def _tmp_root() -> Path:
 
 
 _CASE_TO_SPEC = {
-    # Current paper rows: MOSI more/mosi trial 39 and MOSEI phase1 trial 70.
+    # Nov-2026 paper DeBERTa / SIMS-v2 rows (sota_search trials).
     "mosi": {
-        "hparams": _ABLATION / "mosi_more_trial39_hparams.py",
+        "hparams": _HERE / "hparams_mosi_deberta_trial812.py",
         "train_py": _ABLATION / "train.py",
         "argv0": "ablation_study/train.py",
     },
     "mosei": {
-        "hparams": _ABLATION / "mosei_phase1_trial70_hparams.py",
+        "hparams": _HERE / "hparams_mosei_deberta_trial36.py",
         "train_py": _ABLATION / "train.py",
         "argv0": "ablation_study/train.py",
     },
     "simsv2": {
-        "hparams": _FIXED_EXP / "simsv2_phase4_trial52_hparams.py",
-        "train_py": _FIXED_EXP / "train.py",
-        "argv0": "fixed_experiment/train.py",
+        "hparams": _HERE / "hparams_simsv2_trial159.py",
+        "train_py": _ABLATION / "train.py",
+        "argv0": "ablation_study/train.py",
     },
 }
 

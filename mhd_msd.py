@@ -1,14 +1,40 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import font_manager as fm
 from matplotlib.ticker import FormatStrFormatter
 
+_tnr_dir = Path(__file__).resolve().parent / "loss_curve_analysis" / "fonts"
+for _name in (
+    "Times.TTF",
+    "Timesbd.TTF",
+    "Timesi.TTF",
+    "Timesbi.TTF",
+    "TimesNewRoman.ttf",
+    "TimesNewRoman-Bold.ttf",
+    "TimesNewRoman-Italic.ttf",
+    "TimesNewRoman-BoldItalic.ttf",
+):
+    _path = _tnr_dir / _name
+    if _path.is_file():
+        fm.fontManager.addfont(str(_path))
+plt.rcParams.update(
+    {
+        "font.family": "Times New Roman",
+        "font.serif": ["Times New Roman"],
+        "pdf.fonttype": 42,
+        "ps.fonttype": 42,
+    }
+)
+
 methods = {
-    "2": ["Self-MM","FDMER", "MISA" ,"UCMIB-PNS", "AtCAF", "SuCI", "DHMD","RITHM"],
+    "2": ["Self-MM","FDMER", "MISA" ,"UCMIB-PNS", "AtCAF", "SuCI", "DHMD","PRISM"],
     "3": ["MAG-XLNet", "HKT", "MuLOT", "MIL", "MCL", "MGCL", "DHMD", "PRISM"]
 }
 
 data = {
-    "2": [68.77,70.55,70.61, 72.13,  72.13, 70.92, 71.30,  75.35],
+    "2": [68.77,70.55,70.61, 72.13,  72.13, 70.92, 71.30,  75.15],
     "3": [74.72, 76.47, 76.82, 76.30, 77.94, 77.94, 78.50, 79.41]
 }
 

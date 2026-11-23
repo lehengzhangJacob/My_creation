@@ -8,7 +8,7 @@ MAX_SEQ_LEN = {
 }
 
 CONFIDENCE_MODE_CHOICES = ("token", "modality", "uniform")
-ROUTING_MODE_CHOICES = ("gumbel", "argmax", "soft", "batch_gumbel")
+ROUTING_MODE_CHOICES = ("gumbel", "argmax", "soft", "batch_gumbel", "topk")
 
 
 def format_classify_float_argv(p: dict[str, float | int]) -> dict[str, str]:

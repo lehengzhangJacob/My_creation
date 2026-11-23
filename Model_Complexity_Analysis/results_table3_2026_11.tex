@@ -1,0 +1,15 @@
+\begin{tabular}{l|ccc}
+\toprule
+& MOSI & MOSEI & SIMS-v2 \\
+\midrule
+Parameters & 193.6M & 185.0M & 104.6M \\
+FLOPs / train fwd & 90.96G & 26.55G & 35.31G \\
+Train fwd FLOPs / epoch & 7.37T & 108.00T & 12.04T \\
+Dev eval FLOPs / epoch & 1.46T & 9.37T & 3.39T \\
+Test eval FLOPs / epoch & 4.37T & 23.12T & 5.08T \\
+Peak train memory (GiB) & 4.772 & 3.640 & 1.956 \\
+Avg. epoch time (full loop, s) & 14.52 & 436.80 & 35.56 \\
+Batches / epoch & 81 & 4{,}067 & 341 \\
+Batch $\times$ accum. & 16$\times$2 & 4$\times$8 & 8$\times$4 \\
+\bottomrule
+\end{tabular}

@@ -371,8 +371,12 @@ def main() -> None:
                 continue
             avail = free.get(gpu, 0) - args.margin_mib
             cands = []
+            # Hold a reserved GPU only when a starving row actually fits now;
+            # otherwise smaller unmet rows keep packing the leftover VRAM.
+            starve_fits = bool(reserved is not None and starving and any(
+                state["mem"].get(r, ROWS[r].mem_mib) <= avail for r in starving))
             for name in pending:
-                if gpu == reserved and name not in starving:
+                if starve_fits and name not in starving:
                     continue
                 n_run = sum(1 for j in state["running"] if j["row"] == name)
                 if n_run >= args.max_per_row:
