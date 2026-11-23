@@ -5,16 +5,22 @@
 #   GPU=2 bash fixed_experiment/run_sota_2026_11.sh simsv2_trial159
 #   GPU=3 bash fixed_experiment/run_sota_2026_11.sh mosei_deberta_trial36
 #   GPU=1 ABLATION=no_ib bash fixed_experiment/run_sota_2026_11.sh simsv2_trial159   # w/o VTB
+#   GPU=3 ROUTING=soft bash fixed_experiment/run_sota_2026_11.sh mosei_deberta_trial36  # router variant
+#   GPU=3 NO_LRIB=1 bash fixed_experiment/run_sota_2026_11.sh mosei_deberta_trial36
 #
-# Outputs: fixed_experiment/runs/sota_2026_11/<trial>[_<ablation>]/{train.log,checkpoints/,check.log}
+# Outputs: fixed_experiment/runs/sota_2026_11/<trial>[_<variant>]/{train.log,checkpoints/,check.log}
 set -euo pipefail
-TRIAL="${1:?usage: run_sota_2026_11.sh <simsv2_trial159|mustard_trial1239|mosei_deberta_trial36>}"
+TRIAL="${1:?usage: run_sota_2026_11.sh <trial_name>}"
 ABLATION="${ABLATION:-none}"
+ROUTING="${ROUTING:-gumbel}"
 MY_CREATION="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$MY_CREATION"
 
 PYTHON="${PYTHON:-/home/gmn/.conda/envs/prism/bin/python}"
-RUN="$TRIAL"; [[ "$ABLATION" != none ]] && RUN="${TRIAL}_${ABLATION}"
+RUN="$TRIAL"; EXTRA=(--ablation "$ABLATION" --routing-mode "$ROUTING")
+[[ "$ABLATION" != none ]] && RUN="${RUN}_${ABLATION}"
+[[ "$ROUTING" != gumbel ]] && RUN="${RUN}_route_${ROUTING}"
+if [[ -n "${NO_LRIB:-}" ]]; then RUN="${RUN}_no_lrib"; EXTRA+=(--disable-l-rib); fi
 OUT="${MY_CREATION}/fixed_experiment/runs/sota_2026_11/${RUN}"
 mkdir -p "$OUT"
 
@@ -22,7 +28,7 @@ for v in http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY; do u
 export CUDA_VISIBLE_DEVICES="${GPU:-0}"
 export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 TOKENIZERS_PARALLELISM=false PYTHONDONTWRITEBYTECODE=1
 
-nohup "$PYTHON" -u fixed_experiment/train_fixed_sota_2026_11.py --trial "$TRIAL" --ablation "$ABLATION" \
+nohup "$PYTHON" -u fixed_experiment/train_fixed_sota_2026_11.py --trial "$TRIAL" "${EXTRA[@]}" \
   --out-dir "$OUT" > "${OUT}/check.log" 2>&1 &
 echo "started ${RUN} on GPU ${CUDA_VISIBLE_DEVICES} pid $!"
 echo "  train log : ${OUT}/train.log"

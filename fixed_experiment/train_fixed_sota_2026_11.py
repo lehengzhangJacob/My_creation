@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""Replay a frozen Nov-2026 trial (see ``sota_2026_11_trials.py``) and check reproduction.
+"""Replay a frozen trial (see ``sota_2026_11_trials.py``) and check reproduction.
 
 Examples (from anywhere):
     python fixed_experiment/train_fixed_sota_2026_11.py --trial mustard_trial1239 --dry-run
-    python fixed_experiment/train_fixed_sota_2026_11.py --trial mustard_trial1239
     python fixed_experiment/train_fixed_sota_2026_11.py --trial mustard_trial1239 --check-only
 
-After training, the ``Best Results`` block of the new log is compared line by line
-with the original trial log; exit code 0 means an exact reproduction.
+After training, the ``Best Results`` block is compared line by line with the
+gold log; exit code 0 means an exact reproduction.
 """
 
 from __future__ import annotations
@@ -63,9 +62,18 @@ def main() -> int:
                     choices=("none", "no_ib", "no_mselector", "no_infogate"),
                     help="no_ib = w/o VTB, no_mselector = w/o DPR, no_infogate = w/o InfoGate; "
                          "all other hyper-parameters stay frozen")
+    ap.add_argument("--routing-mode", default="gumbel", choices=("gumbel", "argmax", "soft"),
+                    help="DPR router variant (paper tab:router-variants)")
+    ap.add_argument("--disable-l-rib", action="store_true",
+                    help="drop the routing IB prior loss (router variant 'No L_rib')")
     args = ap.parse_args()
 
-    run_name = args.trial if args.ablation == "none" else f"{args.trial}_{args.ablation}"
+    variant = [] if args.ablation == "none" else [args.ablation]
+    if args.routing_mode != "gumbel":
+        variant.append(f"route_{args.routing_mode}")
+    if args.disable_l_rib:
+        variant.append("no_lrib")
+    run_name = "_".join([args.trial, *variant])
     out = Path(args.out_dir or HERE / "runs" / "sota_2026_11" / run_name).resolve()
     log_path = out / "train.log"
     if args.check_only:
@@ -75,6 +83,10 @@ def main() -> int:
     cmd = [sys.executable, "-u", cfg["script"], *build_argv(args.trial, str(out / "checkpoints"))]
     if args.ablation != "none":
         cmd += ["--ablation", args.ablation]
+    if args.routing_mode != "gumbel":
+        cmd += ["--routing_mode", args.routing_mode]
+    if args.disable_l_rib:
+        cmd += ["--disable_l_rib"]
     if args.dry_run:
         print("cwd:", MY_CREATION)
         print("exec:", " ".join(cmd))
@@ -88,7 +100,7 @@ def main() -> int:
     if rc != 0:
         print(f"[{args.trial}] training exited with code {rc}; see {log_path}")
         return rc
-    if args.ablation != "none":
+    if variant:
         print(f"[{run_name}] full model: {cfg['test']}")
         print("\n".join(best_block(log_path)))
         return 0
