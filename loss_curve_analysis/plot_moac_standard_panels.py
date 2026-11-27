@@ -85,7 +85,15 @@ def _style_ax(ax: plt.Axes, legend_label: str) -> None:
     ax.set_ylabel("Values", labelpad=1.5)
     ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
     ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
-    ax.legend(loc="upper right", frameon=False, handlelength=1.6, borderaxespad=0.2)
+    ax.legend(
+        loc="upper right",
+        frameon=True,
+        fancybox=False,
+        edgecolor="0.6",
+        framealpha=1.0,
+        handlelength=1.8,
+        borderpad=0.3,
+    )
     ax.tick_params(direction="out", pad=1.5)
     for spine in ax.spines.values():
         spine.set_linewidth(0.45)
@@ -99,7 +107,60 @@ def read_rows(path: Path) -> list[dict[str, str]]:
     return sorted(rows, key=lambda row: float(row["iteration"]))
 
 
-def plot_composite(rows: list[dict[str, str]], out_dir: Path, ncols: int) -> None:
+def _moving_average(values: list[float], window: int) -> list[float]:
+    """Centered mean. A short window leaves the raw series as a solid band."""
+    n = len(values)
+    if window <= 1 or n == 0:
+        return values
+    half = window // 2
+    out = []
+    acc = 0.0
+    # prefix sums
+    prefix = [0.0]
+    for v in values:
+        acc += v
+        prefix.append(acc)
+    for i in range(n):
+        lo = max(0, i - half)
+        hi = min(n, i + half + 1)
+        out.append((prefix[hi] - prefix[lo]) / (hi - lo))
+    return out
+
+
+def smooth_rows(rows: list[dict[str, str]], window: int) -> list[dict[str, str]]:
+    """Smooth each loss inside a stage so the stage-2 onset of routing stays sharp."""
+    if window <= 1:
+        return rows
+    cols = [spec[0] for spec in SERIES]
+    smoothed = [dict(row) for row in rows]
+    start = 0
+    while start < len(rows):
+        stage = rows[start].get("stage", "")
+        end = start + 1
+        while end < len(rows) and rows[end].get("stage", "") == stage:
+            end += 1
+        for col in cols:
+            raw = [float(rows[i][col]) for i in range(start, end)]
+            avg = _moving_average(raw, window)
+            for offset, value in enumerate(avg):
+                smoothed[start + offset][col] = f"{value:.8g}"
+        start = end
+    return smoothed
+
+
+def decimate(rows: list[dict[str, str]], stride: int) -> list[dict[str, str]]:
+    """Keep one row every ``stride`` logged bins.
+
+    The CSV is already a 10-iteration mean, but plotting all ~20k bins in a
+    two-inch panel paints a solid band. MOAC Figure 4 shows a few thousand
+    iterations as a thin polyline; stride 10 of these bins is 100 iterations.
+    """
+    if stride <= 1:
+        return rows
+    return rows[::stride]
+
+
+def plot_composite(rows: list[dict[str, str]], out_dir: Path, ncols: int, prefix: str) -> None:
     x = [float(r["iteration"]) for r in rows]
     n = len(SERIES)
     nrows = (n + ncols - 1) // ncols
@@ -108,7 +169,7 @@ def plot_composite(rows: list[dict[str, str]], out_dir: Path, ncols: int) -> Non
 
     for ax, (col, legend_label, subcaption, color, _stem) in zip(flat, SERIES):
         y = [float(r[col]) for r in rows]
-        ax.plot(x, y, color=color, linewidth=0.75, label=legend_label)
+        ax.plot(x, y, color=color, linewidth=1.15, solid_capstyle="round", label=legend_label)
         _style_ax(ax, legend_label)
         ax.text(
             0.5,
@@ -131,7 +192,7 @@ def plot_composite(rows: list[dict[str, str]], out_dir: Path, ncols: int) -> Non
         wspace=0.34,
         hspace=0.72,
     )
-    stem = f"mosi_trial39_moac_standard{n}"
+    stem = f"{prefix}_moac_standard{n}"
     for suffix in ("pdf", "png"):
         path = out_dir / f"{stem}.{suffix}"
         fig.savefig(path, dpi=300 if suffix == "png" else None, bbox_inches="tight")
@@ -139,12 +200,13 @@ def plot_composite(rows: list[dict[str, str]], out_dir: Path, ncols: int) -> Non
     plt.close(fig)
 
 
-def plot_panels(rows: list[dict[str, str]], out_dir: Path) -> None:
+def plot_panels(rows: list[dict[str, str]], out_dir: Path, prefix: str) -> None:
     x = [float(r["iteration"]) for r in rows]
     for col, legend_label, _subcaption, color, stem in SERIES:
+        stem = stem.replace("mosi_trial39", prefix)
         y = [float(r[col]) for r in rows]
-        fig, ax = plt.subplots(figsize=(3.0, 2.15))
-        ax.plot(x, y, color=color, linewidth=0.75, label=legend_label)
+        fig, ax = plt.subplots(figsize=(4.7, 2.42))
+        ax.plot(x, y, color=color, linewidth=1.15, solid_capstyle="round", label=legend_label)
         _style_ax(ax, legend_label)
         fig.subplots_adjust(left=0.16, right=0.985, top=0.98, bottom=0.18)
         pdf = out_dir / f"{stem}.pdf"
@@ -176,16 +238,34 @@ def main() -> None:
         action="store_true",
         help="Skip the five single-panel PDF/PNGs used by the manuscript.",
     )
+    parser.add_argument(
+        "--prefix",
+        default="mosi_trial39",
+        help="Filename prefix for the five panels and the composite.",
+    )
+    parser.add_argument(
+        "--smooth",
+        type=int,
+        default=1,
+        help="Extra centered moving average, in CSV rows. 1 disables it.",
+    )
+    parser.add_argument(
+        "--stride",
+        type=int,
+        default=10,
+        help="Plot one CSV row out of this many. "
+             "Each row is a 10-iteration mean, so 10 matches MOAC's point density.",
+    )
     args = parser.parse_args()
 
-    rows = read_rows(args.csv)
+    rows = decimate(smooth_rows(read_rows(args.csv), max(1, args.smooth)), max(1, args.stride))
     args.out_dir.mkdir(parents=True, exist_ok=True)
     _apply_rc()
 
     if not args.no_composite:
-        plot_composite(rows, args.out_dir, ncols=max(1, args.ncols))
+        plot_composite(rows, args.out_dir, ncols=max(1, args.ncols), prefix=args.prefix)
     if not args.no_panels:
-        plot_panels(rows, args.out_dir)
+        plot_panels(rows, args.out_dir, prefix=args.prefix)
 
 
 if __name__ == "__main__":

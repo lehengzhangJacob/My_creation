@@ -1034,9 +1034,17 @@ class InfoGate(nn.Module):
             'routing_entropy': routing_entropy.item() if torch.is_tensor(routing_entropy) else routing_entropy,
         }
         # Per-slot weight / primary / confidence diagnostics (N-modality).
+        # top2_* is the fraction of the batch in which that modality is one of
+        # the two highest soft scores. It does not use Gumbel noise, so a
+        # top-k run can be compared with the hard Gumbel primary.
+        k_top = min(2, weights.size(-1))
+        top_index = torch.topk(weights, k=k_top, dim=-1).indices
+        in_top2 = torch.zeros_like(weights)
+        in_top2.scatter_(-1, top_index, 1.0)
         for i, m in enumerate(self.modality_order):
             loss_dict[f'w_{slot_names[m]}'] = weights[:, i].mean().item()
             loss_dict[f'primary_{primary_chars[m]}'] = (primary_idx == i).float().mean().item()
+            loss_dict[f'top2_{primary_chars[m]}'] = in_top2[:, i].mean().item()
         for m in self.modalities:
             loss_dict[f'conf_{m}'] = conf[m].mean().item()
 

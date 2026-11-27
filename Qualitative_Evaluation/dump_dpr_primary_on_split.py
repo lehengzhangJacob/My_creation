@@ -335,7 +335,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--checkpoint", type=str, required=True)
     ap.add_argument("--dataset", type=str, choices=("mosi", "mosei", "simsv2"), required=True)
-    ap.add_argument("--split", type=str, choices=("dev", "test"), default="test")
+    ap.add_argument("--split", type=str, choices=("train", "dev", "test"), default="test")
     ap.add_argument("--output", type=str, required=True)
     ap.add_argument("--batch_size", type=int, default=64)
     ap.add_argument("--seed", type=int, default=128)
@@ -406,10 +406,13 @@ def main() -> int:
     ds_path = os.path.join(_MY, "datasets", f"{cli.dataset}.pkl")
     with open(ds_path, "rb") as fh:
         data = pickle.load(fh)
-    key = "dev" if args.split == "dev" and "dev" in data else (
-        "valid" if args.split == "dev" and "valid" in data else None
-    )
-    if args.split == "dev":
+    if args.split == "train":
+        if "train" not in data:
+            print("ERROR: no train split in pickle", file=sys.stderr)
+            return 1
+        raw = data["train"]
+    elif args.split == "dev":
+        key = "dev" if "dev" in data else ("valid" if "valid" in data else None)
         if key is None:
             print("ERROR: no dev/valid split in pickle", file=sys.stderr)
             return 1

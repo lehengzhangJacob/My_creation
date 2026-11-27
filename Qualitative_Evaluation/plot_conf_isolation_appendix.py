@@ -23,13 +23,13 @@ _OUTS = [
 TICKS = ["Tok", "Mod", "Unif", "None"]
 LEGEND_LABELS = ["Token", "Modality", r"Uniform $1/L$", "No conf."]
 RETRAIN = {
-    "CMU-MOSEI": [0.499, 0.500, 0.527, 0.508],
-    "CH-SIMS v2": [0.291, 0.301, 0.311, 0.301],
+    "CMU-MOSEI": [0.499, 0.500, 0.516, 0.502],
+    "CH-SIMS v2": [0.290, 0.297, 0.323, 0.315],
 }
 # Tight bands around each dataset so bar heights (and gaps) are readable.
 YLIM = {
-    "CMU-MOSEI": (0.485, 0.540),
-    "CH-SIMS v2": (0.280, 0.325),
+    "CMU-MOSEI": (0.491, 0.524),
+    "CH-SIMS v2": (0.279, 0.335),
 }
 COLORS = ["#1b6b4a", "#4c8c6a", "#c45c26", "#8a8a8a"]
 

@@ -641,6 +641,7 @@ def main():
         diag_keys = ['w_acoustic', 'w_language', 'w_visual', 'w_hcf',
                      'target_acoustic', 'target_language', 'target_visual', 'target_hcf',
                      'primary_a', 'primary_l', 'primary_v', 'primary_h',
+                     'top2_a', 'top2_l', 'top2_v', 'top2_h',
                      'err_acoustic', 'err_language', 'err_visual', 'err_hcf',
                      'conf_t', 'conf_a', 'conf_v', 'conf_h', 'fusion_conf',
                      'routing_entropy', 'pred_mean', 'pred_std']
@@ -666,6 +667,13 @@ def main():
             if 'primary_h' in diag_vals:
                 p_parts.append(f"h:{diag_vals['primary_h']:.2f}")
             p_str = f"primary=[{' '.join(p_parts)}]"
+            if 'top2_a' in diag_vals:
+                t_parts = [f"a:{diag_vals.get('top2_a',0):.2f}",
+                           f"l:{diag_vals.get('top2_l',0):.2f}",
+                           f"v:{diag_vals.get('top2_v',0):.2f}"]
+                if 'top2_h' in diag_vals:
+                    t_parts.append(f"h:{diag_vals['top2_h']:.2f}")
+                p_str += f"  top2=[{' '.join(t_parts)}]"
 
             err_parts = [f"a:{diag_vals.get('err_acoustic',0):.3f}",
                          f"l:{diag_vals.get('err_language',0):.3f}",

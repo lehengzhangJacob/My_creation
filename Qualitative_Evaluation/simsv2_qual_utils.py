@@ -103,6 +103,10 @@ def simsv2_infogate(model):
 
 
 def simsv2_split_key(data: dict, split: str) -> str:
+    if split == "train":
+        if "train" not in data:
+            raise KeyError("SIMSv2 pickle has no train split")
+        return "train"
     if split == "dev":
         if "dev" in data:
             return "dev"

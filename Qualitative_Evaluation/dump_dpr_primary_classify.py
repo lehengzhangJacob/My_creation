@@ -107,7 +107,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--checkpoint", type=str, required=True)
     ap.add_argument("--dataset", type=str, choices=("mustard", "ur_funny"), required=True)
-    ap.add_argument("--split", type=str, choices=("dev", "test"), default="test")
+    ap.add_argument("--split", type=str, choices=("train", "dev", "test"), default="test")
     ap.add_argument("--output", type=str, required=True)
     ap.add_argument("--batch_size", type=int, default=128)
     ap.add_argument("--seed", type=int, default=128)
@@ -215,8 +215,13 @@ def main() -> int:
         hcf_dim=hcf_dim,
         slice_hkt=True,
     )
-    dl = dev_dl if args.split == "dev" else test_dl
-    del _tr, _nopt
+    if args.split == "train":
+        dl = _tr
+    elif args.split == "dev":
+        dl = dev_dl
+    else:
+        dl = test_dl
+    del _nopt
 
     names_3 = {0: "acoustic", 1: "language", 2: "visual"}
     names_4 = {0: "acoustic", 1: "language", 2: "visual", 3: "hcf"}

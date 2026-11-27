@@ -62,7 +62,7 @@ def main() -> int:
                     choices=("none", "no_ib", "no_mselector", "no_infogate"),
                     help="no_ib = w/o VTB, no_mselector = w/o DPR, no_infogate = w/o InfoGate; "
                          "all other hyper-parameters stay frozen")
-    ap.add_argument("--routing-mode", default="gumbel", choices=("gumbel", "argmax", "soft"),
+    ap.add_argument("--routing-mode", default="gumbel", choices=("gumbel", "argmax", "soft", "topk"),
                     help="DPR router variant (paper tab:router-variants)")
     ap.add_argument("--disable-l-rib", action="store_true",
                     help="drop the routing IB prior loss (router variant 'No L_rib')")
